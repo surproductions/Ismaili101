@@ -14,6 +14,7 @@ struct Chapter: Identifiable, Codable, Hashable {
     let keyTerms: [KeyTerm]
     var quiz: [QuizQuestion] // knowledge-check bank (25 per chapter)
     var lessons: [Lesson] = [] // "Go deeper" lessons shown after the overview
+    var sources: [SourceLink] = []
 }
 
 /// A longer reading inside a chapter.
@@ -295,4 +296,69 @@ struct MuslimGroup: Identifiable, Hashable {
     let leadership: String
     let whereFound: String
     let features: [String]
+}
+
+// MARK: - Sources
+
+struct SourceLink: Identifiable, Hashable {
+    var id: String { url }
+    let title: String
+    let url: String
+}
+
+// MARK: - Guides (festivals, ethics, institutions)
+
+struct GuidePage: Identifiable, Hashable {
+    var id: String { title }
+    let title: String
+    let subtitle: String
+    let symbol: String
+    let intro: String
+    let sections: [GuideSection]
+    var note: String? = nil
+    var sources: [SourceLink] = []
+}
+
+struct GuideSection: Identifiable, Hashable {
+    var id: String { heading }
+    let heading: String
+    let symbol: String
+    var detail: String? = nil      // e.g. a date
+    let body: [String]
+}
+
+// MARK: - People in history
+
+enum FigureGroup: String, CaseIterable {
+    case dais = "Da'is & thinkers"
+    case pirs = "Pirs of South Asia"
+    case women = "Women in history"
+
+    var symbol: String {
+        switch self {
+        case .dais: return "book.closed.fill"
+        case .pirs: return "music.note"
+        case .women: return "person.crop.circle.fill"
+        }
+    }
+}
+
+struct HistoricalFigure: Identifiable, Hashable {
+    var id: String { name }
+    let name: String
+    let group: FigureGroup
+    let dates: String
+    let role: String
+    let text: String
+    var legacy: String? = nil
+}
+
+// MARK: - Full list of Imams
+
+struct ImamListEntry: Identifiable, Hashable {
+    var id: Int { number }
+    let number: Int
+    let name: String
+    let dates: String
+    var note: String? = nil
 }
