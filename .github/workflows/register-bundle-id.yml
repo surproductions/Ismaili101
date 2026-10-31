@@ -1,0 +1,81 @@
+name: Register Bundle ID
+
+# Registers the app's bundle ID with Apple using the App Store Connect API key
+# secrets (ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8). Safe to re-run: if the ID
+# already exists it just reports it. Never prints secret values.
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: "Bundle ID to register"
+        required: true
+        default: "com.surproductions.ismaili101"
+      name:
+        description: "Display name in the Apple Developer portal"
+        required: true
+        default: "Ismaili 101"
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register bundle ID
+        env:
+          KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          PRIVATE_KEY: ${{ secrets.ASC_KEY_P8 }}
+          BUNDLE_ID: ${{ github.event.inputs.bundle_id }}
+          APP_NAME: ${{ github.event.inputs.name }}
+        run: |
+          pip install -q pyjwt cryptography requests
+          python3 - <<'EOF'
+          import base64, os, time
+          import jwt, requests
+
+          key_id = os.environ["KEY_ID"].strip()
+          issuer = os.environ["ISSUER_ID"].strip()
+          pem = os.environ["PRIVATE_KEY"].strip()
+          bundle = os.environ["BUNDLE_ID"].strip()
+          name = os.environ["APP_NAME"].strip()
+          if not (key_id and issuer and pem):
+              print("::error::Missing ASC_KEY_ID, ASC_ISSUER_ID or ASC_KEY_P8 secret.")
+              raise SystemExit(1)
+
+          if "BEGIN PRIVATE KEY" not in pem:
+              body = "".join(pem.split())
+              try:
+                  decoded = base64.b64decode(body).decode()
+              except Exception:
+                  decoded = ""
+              if "BEGIN PRIVATE KEY" in decoded:
+                  pem = decoded
+              else:
+                  pem = ("-----BEGIN PRIVATE KEY-----\n"
+                         + "\n".join(body[i:i + 64] for i in range(0, len(body), 64))
+                         + "\n-----END PRIVATE KEY-----\n")
+
+          token = jwt.encode({"iss": issuer, "iat": int(time.time()), "exp": int(time.time()) + 900, "aud": "appstoreconnect-v1"},
+                             pem, algorithm="ES256", headers={"kid": key_id, "typ": "JWT"})
+          headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+          api = "https://api.appstoreconnect.apple.com/v1"
+
+          r = requests.get(f"{api}/bundleIds", params={"filter[identifier]": bundle}, headers=headers)
+          if r.status_code != 200:
+              print(f"::error::App Store Connect rejected the API key ({r.status_code}): {r.text[:300]}")
+              raise SystemExit(1)
+          existing = [b for b in r.json().get("data", []) if b["attributes"]["identifier"] == bundle]
+          if existing:
+              a = existing[0]["attributes"]
+              print(f"::notice title=Already registered::{bundle} ({a['name']}, platform {a['platform']}, team {a.get('seedId')})")
+              raise SystemExit(0)
+
+          body = {"data": {"type": "bundleIds", "attributes": {"identifier": bundle, "name": name, "platform": "IOS"}}}
+          r = requests.post(f"{api}/bundleIds", json=body, headers=headers)
+          if r.status_code != 201:
+              print(f"::error::Could not register {bundle} ({r.status_code}): {r.text[:500]}")
+              raise SystemExit(1)
+          a = r.json()["data"]["attributes"]
+          print(f"::notice title=Registered::{bundle} ({a['name']}, team {a.get('seedId')}). "
+                "Next: App Store Connect → My Apps → + → New App, and pick this bundle ID.")
+          EOF
