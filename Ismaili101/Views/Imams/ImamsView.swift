@@ -99,9 +99,9 @@ struct ImamCard: View {
             }
             Text(imam.name)
                 .font(.headline)
-            Text(imam.period)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            Label(imam.period, systemImage: "calendar")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.emerald)
             Text(imam.summary)
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
@@ -154,6 +154,30 @@ struct ImamCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.emerald.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .transition(.opacity)
+
+                if !imam.contemporaries.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("Famous contemporaries", systemImage: "person.2.fill")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(Color.gold)
+                        ForEach(imam.contemporaries, id: \.self) { person in
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: "person.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.gold)
+                                    .padding(.top, 3)
+                                Text(person)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.gold.opacity(0.10), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .transition(.opacity)
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -72,6 +72,7 @@ struct Imam: Identifiable, Codable, Hashable {
     let realm: String        // empire / state they ruled, or the power they lived under
     let residence: String    // where they lived
     let meanwhile: [String]  // what else was happening in the world
+    var contemporaries: [String] = []  // world leaders and famous people alive at the time
     var isPresentImam: Bool = false
 }
 
