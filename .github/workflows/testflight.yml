@@ -203,7 +203,9 @@ jobs:
           if [ "$SIGNING" = manual ]; then
             SIGN=(CODE_SIGN_STYLE=Manual "CODE_SIGN_IDENTITY=Apple Distribution" "PROVISIONING_PROFILE_SPECIFIER=$PROFILE_NAME")
           else
-            SIGN=(CODE_SIGN_STYLE=Automatic)
+            # Archive unsigned; the export step signs for distribution with the API key (cloud signing),
+            # so no development certificate has to be created on the runner.
+            SIGN=(CODE_SIGN_STYLE=Automatic CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO "CODE_SIGN_IDENTITY=")
           fi
           xcodebuild \
             -project Ismaili101.xcodeproj -scheme Ismaili101 -configuration Release \
