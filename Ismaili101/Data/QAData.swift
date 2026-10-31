@@ -64,6 +64,49 @@ enum QAData {
                 "Ismaili thought holds that God is beyond every human category, so we cannot picture God. Instead we relate to God through God's Word, through the intellect it brings forth, through the guidance of the Imam, and through remembrance and love.",
                 "Prayer, learning and service are all ways the soul turns toward its source."
                ]),
+        QAItem(question: "How was the universe created?",
+               category: "Big Questions",
+               tags: ["creation", "universe", "big bang", "origin", "ibda", "cosmos"],
+               answer: [
+                "Classical Ismaili thinkers taught that God originates all being through the divine command, 'Be!' — a timeless act called ibda'. First comes the Universal Intellect, then the Universal Soul, whose striving gives rise to time, nature and the physical world in stages.",
+                "Science describes how the physical universe developed after the Big Bang about 13.8 billion years ago. Many Ismailis see no conflict: science explains how the universe unfolds; faith asks why anything exists at all.",
+                "See Chapter 15, 'The Big Questions'."
+               ]),
+        QAItem(question: "What is the universe?",
+               category: "Big Questions",
+               tags: ["universe", "cosmos", "reality", "microcosm", "signs"],
+               answer: [
+                "In Ismaili thought the universe has layers: a spiritual world of Intellect and Soul, and a physical world of matter and time. Every physical thing points to a spiritual counterpart.",
+                "The Qur'an calls nature's features 'signs'. And each human being is a microcosm — a small world containing the whole cosmos in miniature."
+               ]),
+        QAItem(question: "What is the point of this life and reality?",
+               category: "Big Questions",
+               tags: ["purpose", "meaning", "why", "reality", "point", "life"],
+               answer: [
+                "The Qur'an says God created humankind to worship Him (51:56), and many commentators understood this to include knowing God. Ismaili thinkers placed knowledge at the heart of the soul's purpose.",
+                "In this view, our souls come from a perfect source and are here to grow — through knowledge, goodness, remembrance and the Imam's guidance — and to return. Human life is where the purpose of creation comes together."
+               ]),
+        QAItem(question: "What happens when we die?",
+               category: "Big Questions",
+               tags: ["death", "die", "pass away", "afterlife", "soul", "hereafter"],
+               answer: [
+                "The body returns to the earth, but the soul continues its journey. Death is understood as a passage, not an end.",
+                "The soul carries with it what it has gained: knowledge and good deeds. That is why the tradition emphasises living with purpose now."
+               ]),
+        QAItem(question: "What is the Day of Judgement?",
+               category: "Big Questions",
+               tags: ["judgement", "judgment", "qiyama", "resurrection", "heaven", "hell", "paradise"],
+               answer: [
+                "The Qur'an speaks of a Day of Resurrection when every soul sees what it has done, and Ismailis affirm it. Ismaili thinkers emphasised its inner meaning: qiyama as the soul's awakening to its true nature.",
+                "Nasir Khusraw described paradise as consummate knowledge and hell as consummate ignorance. Judgement is perfectly just and measured by each soul's capacity, and God's mercy is limitless."
+               ]),
+        QAItem(question: "What is the view on pets and animals?",
+               category: "Big Questions",
+               tags: ["pets", "pet", "animals", "dog", "cat", "animal welfare"],
+               answer: [
+                "Animals, in classical Ismaili thought, have a sensing soul — they feel and suffer — and humans are responsible for treating them well. Muslim tradition praises kindness to animals and condemns cruelty: the Prophet told of a man forgiven for watering a thirsty dog.",
+                "There is no single Ismaili ruling on keeping pets; families choose for themselves. If you keep an animal, care for it with compassion. For specific questions, ask your local religious education teachers."
+               ]),
         QAItem(question: "What is the Du'a and when is it recited?",
                category: "Practice",
                tags: ["prayer", "dua", "du'a", "namaz", "salah"],

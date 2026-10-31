@@ -105,3 +105,31 @@ extension QuizBank {
         Q("Timeless principles applied to today's world is the role of…", ["Ta'lim from the Imam of the Time", "Old books only", "Chance", "Popular opinion"], 0, "Living guidance.")
     ]
 }
+
+extension QuizBank {
+    // MARK: Chapter 15 — The Big Questions
+    static let ch15: [QuizQuestion] = [
+        Q("'Ibda'' means…", ["Origination from not-being", "Destruction", "Prayer", "Migration"], 0, "God bringing being from not-being."),
+        Q("Is ibda' described as an event at a moment in time?", ["No — it is timeless", "Yes, a specific date", "Only on Fridays", "It happened 6,000 years ago"], 0, "It is the timeless dependence of all things on God."),
+        Q("What comes first from God's command?", ["The Universal Intellect", "The stars", "Water", "Humans"], 0, "The Intellect is the first originated being."),
+        Q("Time and nature arise from…", ["The Universal Soul's striving", "Human invention", "The Intellect's sleep", "Chance"], 0, "The Soul's motion brings time and the physical world."),
+        Q("Which order of creation do Ismaili thinkers describe?", ["Elements, minerals, plants, animals, humans", "Humans, animals, plants", "Stars only", "Animals, then minerals"], 0, "A rising ladder of being."),
+        Q("Science estimates the universe began about…", ["13.8 billion years ago", "6,000 years ago", "1 million years ago", "100 years ago"], 0, "The Big Bang, around 13.8 billion years ago."),
+        Q("How do many Ismailis see science and faith on creation?", ["As answering different questions", "As enemies", "As identical", "As irrelevant"], 0, "Science explains how; faith asks why."),
+        Q("What does the Qur'an call features of nature?", ["Signs (ayat)", "Accidents", "Illusions", "Laws only"], 0, "The same word as its verses."),
+        Q("The 'world of origination' contains…", ["Intellect and Soul", "Only matter", "Only time", "Only animals"], 0, "The higher, spiritual world."),
+        Q("Humans are called a microcosm because…", ["We contain the whole cosmos in miniature", "We are tiny", "We live briefly", "We are made of cells"], 0, "Intellect, soul, plant and animal levels meet in us."),
+        Q("Qur'an 51:56 says God created jinn and humankind to…", ["Worship Him", "Build cities", "Fight", "Sleep"], 0, "Many commentators read worship as including knowing God."),
+        Q("'Ma'rifa' means…", ["Knowledge of God", "A festival", "A tax", "A book"], 0, "Recognition and knowledge of God."),
+        Q("The 'hidden treasure' saying expresses that creation exists so that God may be…", ["Known", "Feared only", "Ignored", "Forgotten"], 0, "Cherished especially in mystical traditions."),
+        Q("Is the 'hidden treasure' saying in the standard hadith collections?", ["No", "Yes, in all of them", "Only in Bukhari", "It's in the Qur'an"], 0, "It is a beloved saying, not a standard hadith."),
+        Q("At death, what continues?", ["The soul", "The body", "Wealth", "Status"], 0, "The body returns to the earth; the soul continues."),
+        Q("What does the soul carry beyond this life?", ["Knowledge and good deeds", "Money", "Fame", "Possessions"], 0, "Its 'provisions'."),
+        Q("Do Ismailis affirm the Day of Judgement?", ["Yes", "No", "Only some years", "It's not in the Qur'an"], 0, "All Muslims affirm it; Ismailis emphasise its inner meaning."),
+        Q("Hell, for Nasir Khusraw, is…", ["Consummate ignorance", "A physical furnace only", "Boredom", "A dream"], 0, "The soul's state of ignorance revealed."),
+        Q("Judgement is described as…", ["Perfectly just and merciful", "Random", "Based on wealth", "Based on fame"], 0, "Each soul measured by its own capacity."),
+        Q("In classical Ismaili thought, animals have…", ["A sensing soul", "No soul", "A rational soul", "Only a growing soul"], 0, "They feel and perceive."),
+        Q("The Prophet told of a man forgiven for…", ["Giving water to a thirsty dog", "Building a palace", "Winning a race", "Selling camels"], 0, "Kindness to animals is rewarded."),
+        Q("Is there a single Ismaili ruling on keeping pets?", ["No — families choose; compassion is required", "Yes, pets are forbidden", "Yes, everyone must have one", "Only cats allowed"], 0, "The clear teaching is compassion for animals.")
+    ]
+}

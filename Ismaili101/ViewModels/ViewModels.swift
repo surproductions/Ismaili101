@@ -158,7 +158,7 @@ final class ExploreViewModel: ObservableObject {
 
     init(items: [QAItem] = QAData.all) { self.items = items }
 
-    static let suggestions = ["Nasir Khusraw", "Soul", "Evolution", "Aga Khan title", "Du'a"]
+    static let suggestions = ["Purpose", "Death", "Creation", "Pets", "Nasir Khusraw", "Evolution"]
 
     var results: [QAItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
