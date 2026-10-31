@@ -141,7 +141,7 @@ jobs:
     runs-on: macos-15
     env:
       BUNDLE_ID: ${{ needs.lookup.outputs.bundle_id }}
-      TEAM_ID: ${{ needs.lookup.outputs.team_id }}
+      TEAM_ID: ${{ github.event.inputs.team_id || secrets.APPLE_TEAM_ID || needs.lookup.outputs.team_id }}
       KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       PRIVATE_KEY: ${{ secrets.ASC_KEY_P8 }}
