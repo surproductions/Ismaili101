@@ -30,12 +30,17 @@ struct LearnView: View {
                         progressHeader
 
                         SectionHeader(title: "Explore more")
-                        FaithScienceCard()
-                        ForEach(GuideData.all) { page in
-                            NavigationLink(value: LearnRoute.guide(page)) {
-                                LinkCard(title: page.title, subtitle: page.subtitle, symbol: page.symbol)
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                            NavigationLink(value: LearnRoute.faithScience) {
+                                ExploreTile(title: "Faith & Science", symbol: "atom")
                             }
                             .buttonStyle(SpringButtonStyle())
+                            ForEach(GuideData.all) { page in
+                                NavigationLink(value: LearnRoute.guide(page)) {
+                                    ExploreTile(title: page.title, symbol: page.symbol)
+                                }
+                                .buttonStyle(SpringButtonStyle())
+                            }
                         }
 
                         SectionHeader(title: "Chapters")
@@ -113,7 +118,8 @@ struct LearnView: View {
                 Text("\(progress.completedChapters.count) of \(vm.chapters.count) chapters complete")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Label(progress.streak == 1 ? "1-day streak" : "\(progress.streak)-day streak",
+                Label(progress.streak == 0 ? "Learn today to start a streak"
+                      : (progress.streak == 1 ? "1-day streak" : "\(progress.streak)-day streak"),
                       systemImage: "flame.fill")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(progress.streak > 0 ? Color.orange : Color.secondary)
@@ -154,5 +160,30 @@ struct ChapterRow: View {
                 .font(isDone ? .title3 : .body)
         }
         .card()
+    }
+}
+
+/// Compact square tile for the "Explore more" grid.
+struct ExploreTile: View {
+    let title: String
+    let symbol: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: symbol)
+                .font(.title3)
+                .foregroundStyle(.white)
+                .frame(width: 40, height: 40)
+                .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
+        .card(cornerRadius: 18)
     }
 }

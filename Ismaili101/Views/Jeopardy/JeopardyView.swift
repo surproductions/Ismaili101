@@ -12,7 +12,21 @@ struct JeopardyView: View {
                     Scoreboard(score: vm.score, streak: vm.streak,
                                multiplier: vm.multiplier, best: progress.bestJeopardyScore)
                     board
-                    if vm.isGameOver { gameOverCard }
+                    if vm.isGameOver {
+                        gameOverCard
+                    } else {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Label("How to play", systemImage: "questionmark.circle.fill")
+                                .font(.subheadline.bold())
+                                .foregroundStyle(Color.emerald)
+                            Text("Pick any tile. Harder questions are worth more. Get two right in a row for a ×1.5 bonus, four in a row for ×2. A wrong answer loses half the tile's value.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .card()
+                    }
                 }
                 .padding()
             }

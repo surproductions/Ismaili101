@@ -199,6 +199,18 @@ final class ExploreViewModel: ObservableObject {
 
     static let suggestions = ["Purpose", "Death", "Creation", "Pets", "Nasir Khusraw", "Evolution"]
 
+    /// All questions grouped by category, in a sensible reading order.
+    var grouped: [(category: String, items: [QAItem])] {
+        let order = ["Basics", "The Prophet", "Imamat", "History", "Philosophy", "Big Questions",
+                     "Faith & Science", "Practice", "Festivals", "Everyday ethics", "Ethics",
+                     "Institutions", "Other religions"]
+        let byCategory = Dictionary(grouping: items, by: \.category)
+        let known = order.compactMap { name in byCategory[name].map { (category: name, items: $0) } }
+        let others = byCategory.keys.filter { !order.contains($0) }.sorted()
+            .map { (category: $0, items: byCategory[$0] ?? []) }
+        return known + others
+    }
+
     var results: [QAItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         guard !q.isEmpty else { return items }

@@ -31,12 +31,23 @@ struct ExploreView: View {
                             if vm.results.isEmpty && hits.isEmpty {
                                 emptyState
                             } else {
-                                if !vm.query.isEmpty && !vm.results.isEmpty {
-                                    SectionHeader(title: "Questions & answers")
-                                }
-                                ForEach(vm.results) { item in
-                                    QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
-                                        vm.toggle(item)
+                                if vm.query.isEmpty {
+                                    ForEach(vm.grouped, id: \.category) { group in
+                                        SectionHeader(title: group.category)
+                                        ForEach(group.items) { item in
+                                            QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
+                                                vm.toggle(item)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if !vm.results.isEmpty {
+                                        SectionHeader(title: "Questions & answers")
+                                    }
+                                    ForEach(vm.results) { item in
+                                        QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
+                                            vm.toggle(item)
+                                        }
                                     }
                                 }
                                 if !hits.isEmpty {

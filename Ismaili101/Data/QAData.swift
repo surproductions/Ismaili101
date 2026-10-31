@@ -28,7 +28,7 @@ enum QAData {
                 "Individual views vary; this is a matter of understanding rather than a required doctrine."
                ]),
         QAItem(question: "How does the faith view autism and neurodivergence?",
-               category: "Ethics",
+               category: "Everyday ethics",
                tags: ["autism", "neurodivergence", "adhd", "disability", "inclusion"],
                answer: [
                 "Human dignity belongs to every person. Divine justice ('adl) means each soul is understood in light of its own capacities and circumstances.",

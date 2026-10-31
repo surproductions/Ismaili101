@@ -87,12 +87,11 @@ struct MetricTile: View {
                 .foregroundStyle(Color.emerald)
             Text(metric.label)
                 .font(.footnote.weight(.semibold))
-            Text(metric.source)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 130, alignment: .topLeading)
         .card(cornerRadius: 18)
         .onAppear {
             guard shown == 0 else { return }

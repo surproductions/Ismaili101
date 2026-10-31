@@ -201,6 +201,8 @@ struct MigrationMap: UIViewRepresentable {
                 ? .systemRed
                 : UIColor(red: 0.10, green: 0.53, blue: 0.33, alpha: 1)
             view.canShowCallout = true
+            view.titleVisibility = .hidden
+            view.subtitleVisibility = .hidden
             view.displayPriority = .required
             return view
         }
