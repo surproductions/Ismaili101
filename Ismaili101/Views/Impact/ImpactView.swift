@@ -1,7 +1,11 @@
 import SwiftUI
+import MapKit
 
 struct ImpactView: View {
+    enum Pane: String, CaseIterable { case agencies = "Agencies", contributions = "Contributions" }
+
     @State private var selected: Institution?
+    @State private var pane: Pane = .agencies
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
@@ -11,33 +15,17 @@ struct ImpactView: View {
                 AmbientBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("The Imamat's development, health, education and cultural work, serving people of all faiths.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-
-                        LazyVGrid(columns: columns, spacing: 12) {
-                            ForEach(Array(ImpactData.metrics.enumerated()), id: \.element.id) { index, metric in
-                                MetricTile(metric: metric, delay: Double(index) * 0.12)
-                            }
+                        Picker("Section", selection: $pane) {
+                            ForEach(Pane.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                         }
+                        .pickerStyle(.segmented)
+                        .onChange(of: pane) { _ in Haptics.tap() }
 
-                        Text("Agencies")
-                            .font(.title3.bold())
-                            .foregroundStyle(Color.emerald)
-
-                        ForEach(ImpactData.institutions) { institution in
-                            Button {
-                                Haptics.tap()
-                                selected = institution
-                            } label: {
-                                InstitutionRow(institution: institution)
-                            }
-                            .buttonStyle(SpringButtonStyle())
+                        if pane == .agencies {
+                            agencies
+                        } else {
+                            ContributionsView()
                         }
-
-                        Text("Figures from AKDN and Aga Khan University public pages.")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
                     }
                     .padding()
                 }
@@ -45,6 +33,37 @@ struct ImpactView: View {
             .navigationTitle("Impact")
             .sheet(item: $selected) { InstitutionDetail(institution: $0) }
         }
+    }
+
+    @ViewBuilder
+    private var agencies: some View {
+        Text("The Imamat's development, health, education and cultural work, serving people of all faiths. Tap an agency to see where it works, who it helps and what it has done.")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(Array(ImpactData.metrics.enumerated()), id: \.element.id) { index, metric in
+                MetricTile(metric: metric, delay: Double(index) * 0.12)
+            }
+        }
+
+        Text("Agencies")
+            .font(.title3.bold())
+            .foregroundStyle(Color.emerald)
+
+        ForEach(ImpactData.institutions) { institution in
+            Button {
+                Haptics.tap()
+                selected = institution
+            } label: {
+                InstitutionRow(institution: institution)
+            }
+            .buttonStyle(SpringButtonStyle())
+        }
+
+        Text("Figures from AKDN, Aga Khan University and University of Central Asia public pages; they change over time.")
+            .font(.caption2)
+            .foregroundStyle(.secondary)
     }
 }
 
@@ -136,6 +155,8 @@ struct InstitutionDetail: View {
     let institution: Institution
     @Environment(\.dismiss) private var dismiss
 
+    private let columns = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -148,14 +169,80 @@ struct InstitutionDetail: View {
                     PillTag(text: institution.focus)
                     Text(institution.description)
                         .fixedSize(horizontal: false, vertical: true)
+
+                    if !institution.founded.isEmpty {
+                        InfoRow(symbol: "calendar", title: "Founded", text: institution.founded)
+                    }
+
+                    if !institution.figures.isEmpty {
+                        sectionTitle("By the numbers", symbol: "number")
+                        LazyVGrid(columns: columns, spacing: 10) {
+                            ForEach(institution.figures) { figure in
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(figure.value)
+                                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                                        .foregroundStyle(Color.emerald)
+                                    Text(figure.label)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                .frame(maxWidth: .infinity, minHeight: 70, alignment: .topLeading)
+                                .card(cornerRadius: 14)
+                            }
+                        }
+                    }
+
+                    if !institution.whereItWorks.isEmpty || !institution.places.isEmpty {
+                        sectionTitle("Where it works", symbol: "map.fill")
+                        if !institution.whereItWorks.isEmpty {
+                            Text(institution.whereItWorks)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        if !institution.places.isEmpty {
+                            PlacesMap(places: institution.places)
+                                .frame(height: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            Text(institution.places.map(\.name).joined(separator: " · "))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    if !institution.whoItHelps.isEmpty {
+                        sectionTitle("Who it helps", symbol: "person.3.fill")
+                        Text(institution.whoItHelps)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    if !institution.responses.isEmpty {
+                        sectionTitle("Where it has helped", symbol: "hands.sparkles.fill")
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(institution.responses, id: \.self) { item in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.emerald)
+                                    Text(item).fixedSize(horizontal: false, vertical: true)
+                                }
+                                .font(.subheadline)
+                            }
+                        }
+                        .card()
+                    }
+
+                    sectionTitle("Highlights", symbol: "star.fill")
                     VStack(alignment: .leading, spacing: 10) {
                         ForEach(institution.highlights, id: \.self) { item in
-                            Label(item, systemImage: "checkmark.circle.fill")
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(Color.emerald)
+                            Label(item, systemImage: "sparkle")
+                                .font(.subheadline)
                         }
                     }
                     .card()
+
+                    if !institution.source.isEmpty {
+                        Text("Source: \(institution.source)")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .padding()
             }
@@ -165,6 +252,37 @@ struct InstitutionDetail: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.large])
+    }
+
+    private func sectionTitle(_ title: String, symbol: String) -> some View {
+        Label(title, systemImage: symbol)
+            .font(.headline)
+            .foregroundStyle(Color.emerald)
+            .padding(.top, 4)
+    }
+}
+
+/// Simple pin map that fits all the given places (iOS 16 Map API).
+struct PlacesMap: View {
+    let places: [MapPlace]
+    @State private var region: MKCoordinateRegion
+
+    init(places: [MapPlace]) {
+        self.places = places
+        let lats = places.map(\.latitude), lons = places.map(\.longitude)
+        let minLat = lats.min() ?? 0, maxLat = lats.max() ?? 0
+        let minLon = lons.min() ?? 0, maxLon = lons.max() ?? 0
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2)
+        let span = MKCoordinateSpan(latitudeDelta: min(max((maxLat - minLat) * 1.6, 12), 150),
+                                    longitudeDelta: min(max((maxLon - minLon) * 1.4, 12), 300))
+        _region = State(initialValue: MKCoordinateRegion(center: center, span: span))
+    }
+
+    var body: some View {
+        Map(coordinateRegion: $region, annotationItems: places) { place in
+            MapMarker(coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude),
+                      tint: .green)
+        }
     }
 }

@@ -19,7 +19,7 @@ struct RootTabView: View {
             LearnView()
                 .tabItem { Label("Learn", systemImage: "book.fill") }
             ImamsView()
-                .tabItem { Label("Imams", systemImage: "crown.fill") }
+                .tabItem { Label("History", systemImage: "crown.fill") }
             ImpactView()
                 .tabItem { Label("Impact", systemImage: "globe.americas.fill") }
             PlayHubView()

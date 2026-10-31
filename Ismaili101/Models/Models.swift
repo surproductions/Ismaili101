@@ -78,7 +78,7 @@ struct Imam: Identifiable, Codable, Hashable {
 
 // MARK: - Impact
 
-struct Institution: Identifiable, Codable, Hashable {
+struct Institution: Identifiable, Hashable {
     var id: String { acronym }
     let acronym: String
     let name: String
@@ -86,6 +86,19 @@ struct Institution: Identifiable, Codable, Hashable {
     let focus: String
     let description: String
     let highlights: [String]
+    var founded: String = ""
+    var whereItWorks: String = ""
+    var places: [MapPlace] = []
+    var whoItHelps: String = ""
+    var figures: [KeyFigure] = []
+    var responses: [String] = []      // crises and situations it has helped in
+    var source: String = ""
+}
+
+struct KeyFigure: Identifiable, Hashable {
+    var id: String { label }
+    let value: String
+    let label: String
 }
 
 struct ImpactMetric: Identifiable, Codable, Hashable {
@@ -147,4 +160,65 @@ struct TrueFalseStatement: Identifiable, Codable, Hashable {
     let statement: String
     let isTrue: Bool
     let explanation: String
+}
+
+// MARK: - Journey (history & migration)
+
+enum JourneyKind: String, Codable, CaseIterable {
+    case origin = "Origins"
+    case concealment = "In hiding"
+    case empire = "Empire"
+    case migration = "Migration"
+    case hardship = "Hardship"
+    case today = "Today"
+
+    var symbol: String {
+        switch self {
+        case .origin: return "sunrise.fill"
+        case .concealment: return "eye.slash.fill"
+        case .empire: return "crown.fill"
+        case .migration: return "figure.walk.motion"
+        case .hardship: return "exclamationmark.triangle.fill"
+        case .today: return "globe"
+        }
+    }
+}
+
+struct JourneyEvent: Identifiable, Codable, Hashable {
+    var id: Int { order }
+    let order: Int
+    let years: String
+    let title: String
+    let place: String
+    let latitude: Double
+    let longitude: Double
+    let kind: JourneyKind
+    let ruledBy: String          // empire or power of the time
+    let summary: String
+    var hardship: String? = nil  // what the community suffered, if anything
+}
+
+// MARK: - Places on maps
+
+struct MapPlace: Identifiable, Hashable {
+    var id: String { name }
+    let name: String
+    let latitude: Double
+    let longitude: Double
+}
+
+// MARK: - Contributions
+
+struct ContributionArea: Identifiable, Hashable {
+    var id: String { title }
+    let title: String
+    let symbol: String
+    let items: [Contribution]
+}
+
+struct Contribution: Identifiable, Hashable {
+    var id: String { title }
+    let title: String
+    let era: String
+    let text: String
 }

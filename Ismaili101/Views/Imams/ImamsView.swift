@@ -1,7 +1,10 @@
 import SwiftUI
 
 struct ImamsView: View {
+    enum Pane: String, CaseIterable { case imams = "Imams", journey = "Journey" }
+
     @StateObject private var vm = ImamsViewModel()
+    @State private var section: Pane = .imams
 
     var body: some View {
         NavigationStack {
@@ -9,26 +12,38 @@ struct ImamsView: View {
                 AmbientBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        eraFilter
-                            .padding(.bottom, 12)
-                        Text("A selection of key Imams from the line of 50.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal)
-                            .padding(.bottom, 8)
-                        LazyVStack(spacing: 0) {
-                            ForEach(Array(vm.filtered.enumerated()), id: \.element.id) { index, imam in
-                                TimelineRow(imam: imam, isLast: index == vm.filtered.count - 1)
-                                    .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
-                                                            removal: .opacity))
-                            }
+                        Picker("Section", selection: $section) {
+                            ForEach(Pane.allCases, id: \.self) { Text($0.rawValue).tag($0) }
                         }
+                        .pickerStyle(.segmented)
                         .padding(.horizontal)
+                        .padding(.bottom, 14)
+                        .onChange(of: section) { _ in Haptics.tap() }
+
+                        if section == .imams {
+                            eraFilter
+                                .padding(.bottom, 12)
+                            Text("A selection of key Imams from the line of 50.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal)
+                                .padding(.bottom, 8)
+                            LazyVStack(spacing: 0) {
+                                ForEach(Array(vm.filtered.enumerated()), id: \.element.id) { index, imam in
+                                    TimelineRow(imam: imam, isLast: index == vm.filtered.count - 1)
+                                        .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity),
+                                                                removal: .opacity))
+                                }
+                            }
+                            .padding(.horizontal)
+                        } else {
+                            JourneyView()
+                        }
                     }
                     .padding(.vertical)
                 }
             }
-            .navigationTitle("Imams")
+            .navigationTitle("History")
         }
     }
 
