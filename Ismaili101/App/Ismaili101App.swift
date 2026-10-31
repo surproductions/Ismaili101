@@ -22,7 +22,7 @@ struct RootTabView: View {
                 .tabItem { Label("Imams", systemImage: "crown.fill") }
             ImpactView()
                 .tabItem { Label("Impact", systemImage: "globe.americas.fill") }
-            JeopardyView()
+            PlayHubView()
                 .tabItem { Label("Play", systemImage: "gamecontroller.fill") }
             ExploreView()
                 .tabItem { Label("Explore", systemImage: "magnifyingglass") }

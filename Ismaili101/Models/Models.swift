@@ -12,7 +12,7 @@ struct Chapter: Identifiable, Codable, Hashable {
     let symbol: String       // SF Symbol name
     let overview: [String]   // short paragraphs
     let keyTerms: [KeyTerm]
-    let quiz: [QuizQuestion] // knowledge check
+    var quiz: [QuizQuestion] // knowledge-check bank (25 per chapter)
     var lessons: [Lesson] = [] // "Go deeper" lessons shown after the overview
 }
 
@@ -69,6 +69,9 @@ struct Imam: Identifiable, Codable, Hashable {
     let period: String      // e.g. "Imamat 1957–2025"
     let summary: String
     let coolFact: String
+    let realm: String        // empire / state they ruled, or the power they lived under
+    let residence: String    // where they lived
+    let meanwhile: [String]  // what else was happening in the world
     var isPresentImam: Bool = false
 }
 
@@ -121,4 +124,26 @@ struct QAItem: Identifiable, Codable, Hashable {
     let tags: [String]          // extra search keywords
     let answer: [String]        // paragraphs
     var furtherReading: String? = nil
+}
+
+// MARK: - Daily Path
+
+struct DailyReading: Identifiable, Codable, Hashable {
+    var id: Int { day }
+    let day: Int
+    let title: String
+    let symbol: String
+    let paragraphs: [String]
+    let reflection: String
+
+    var week: Int { (day - 1) / 7 + 1 }
+}
+
+// MARK: - Games
+
+struct TrueFalseStatement: Identifiable, Codable, Hashable {
+    var id: String { statement }
+    let statement: String
+    let isTrue: Bool
+    let explanation: String
 }

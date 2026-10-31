@@ -10,6 +10,7 @@ enum ChaptersData {
         if chapter.lessons.isEmpty {
             chapter.lessons = ChapterLessons.byChapter[chapter.id] ?? []
         }
+        chapter.quiz += QuizBank.extra(for: chapter.id)
         return chapter
     }
 

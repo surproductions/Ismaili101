@@ -7,7 +7,7 @@ struct ChapterDetailView: View {
 
     init(chapter: Chapter) {
         self.chapter = chapter
-        _quiz = StateObject(wrappedValue: QuizViewModel(questions: chapter.quiz))
+        _quiz = StateObject(wrappedValue: QuizViewModel(bank: chapter.quiz))
     }
 
     var body: some View {
@@ -41,7 +41,10 @@ struct ChapterDetailView: View {
                         ForEach(chapter.keyTerms) { KeyTermCard(term: $0) }
                     }
                     section("Knowledge check", symbol: "checkmark.circle.fill") {
-                        KnowledgeCheckView(vm: quiz)
+                        KnowledgeCheckView(vm: quiz,
+                                           mastered: progress.masteredCount(for: chapter),
+                                           total: chapter.quiz.count,
+                                           nextRound: startRound)
                     }
                 }
                 .padding()
@@ -51,6 +54,16 @@ struct ChapterDetailView: View {
         .onChange(of: quiz.isFinished) { finished in
             if finished { progress.markCompleted(chapter) }
         }
+        .onAppear {
+            quiz.onCorrect = { [progress, chapter] question in
+                progress.markMastered(question, in: chapter)
+            }
+            if !quiz.hasStarted { startRound() }
+        }
+    }
+
+    private func startRound() {
+        quiz.startRound(mastered: progress.mastered[chapter.id] ?? [])
     }
 
     private var hero: some View {
@@ -130,9 +143,27 @@ struct KeyTermCard: View {
 
 struct KnowledgeCheckView: View {
     @ObservedObject var vm: QuizViewModel
+    let mastered: Int
+    let total: Int
+    let nextRound: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Round \(vm.round) · \(QuizViewModel.roundSize) questions")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    Text("\(mastered)/\(total) mastered")
+                        .font(.subheadline.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(Color.gold)
+                }
+                ProgressView(value: Double(mastered), total: Double(max(total, 1)))
+                    .tint(Color.gold)
+                    .animation(.spring(), value: mastered)
+            }
+            .card()
+
             ForEach(Array(vm.questions.enumerated()), id: \.element.id) { index, question in
                 VStack(alignment: .leading, spacing: 10) {
                     Text("\(index + 1). \(question.prompt)")
@@ -157,11 +188,16 @@ struct KnowledgeCheckView: View {
                 HStack {
                     Image(systemName: vm.score == vm.questions.count ? "star.fill" : "checkmark.seal.fill")
                         .foregroundStyle(Color.gold)
-                    Text("You scored \(vm.score) of \(vm.questions.count). Chapter complete!")
+                    Text(mastered >= total
+                         ? "\(vm.score)/\(vm.questions.count) — every question mastered!"
+                         : "\(vm.score)/\(vm.questions.count) this round. Keep going!")
                         .font(.subheadline.weight(.semibold))
                     Spacer()
-                    Button("Retry") { vm.reset() }
-                        .font(.subheadline.bold())
+                    Button("Next round") {
+                        Haptics.tap(.medium)
+                        nextRound()
+                    }
+                    .font(.subheadline.bold())
                 }
                 .card()
                 .transition(.scale.combined(with: .opacity))

@@ -24,12 +24,14 @@ open Ismaili101.xcodeproj
 Ismaili101/
 ├── App/          Ismaili101App.swift (entry + TabView), Theme.swift (colours, haptics, card style)
 ├── Models/       Models.swift — Codable structs for every content type
-├── Data/         Chapters (1–10), PhilosophyChapters (11–14), ChapterLessons, Imams, Impact, Jeopardy, Q&A
+├── Data/         Chapters (1–10), PhilosophyChapters (11–14), ChapterLessons, QuizBank1–3 (25 Qs/chapter),
+│                 DailyData (28-day path), Imams, Impact, Jeopardy, TrueFalse, Q&A
 ├── ViewModels/   ProgressStore (UserDefaults persistence) + one view model per tab
 └── Views/
-    ├── Learn/    14 chapters with progress ring, "Go deeper" lessons, flip-card key terms, quizzes
-    ├── Imams/    Era filter chips, timeline with "One cool fact" callouts
+    ├── Learn/    Today card + 28-day Daily Path, 14 chapters, "Go deeper" lessons, flip cards, 5-question rounds with mastery
+    ├── Imams/    Era filters, timeline cards with cool fact, empire/state, residence, "Meanwhile in the world"
     ├── Impact/   Animated metric counters, agency cards with detail sheets
+    ├── Games/    Play hub: Match Up, True or False Blitz (60s), Imam Timeline
     ├── Jeopardy/ 5×5 board, streak multiplier (x1.5 at 2, x2 at 4), haptics, explanations
     └── Explore/  Searchable accordion Q&A with suggestion chips
 ```

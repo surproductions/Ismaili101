@@ -110,7 +110,7 @@ struct ImamCard: View {
                 Haptics.tap()
                 withAnimation(.spring()) { expanded.toggle() }
             } label: {
-                Label(expanded ? "Hide cool fact" : "One cool fact",
+                Label(expanded ? "Show less" : "Cool fact & history",
                       systemImage: expanded ? "chevron.up" : "sparkles")
                     .font(.subheadline.bold())
                     .foregroundStyle(Color.gold)
@@ -129,9 +129,56 @@ struct ImamCard: View {
                 .background(Color.gold.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.gold.opacity(0.4)))
                 .transition(.scale(scale: 0.95, anchor: .top).combined(with: .opacity))
+
+                VStack(alignment: .leading, spacing: 10) {
+                    InfoRow(symbol: "building.columns.fill", title: "Empire / state", text: imam.realm)
+                    InfoRow(symbol: "mappin.and.ellipse", title: "Lived in", text: imam.residence)
+                }
+                .transition(.opacity)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Meanwhile in the world", systemImage: "globe.europe.africa.fill")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(Color.emerald)
+                    ForEach(imam.meanwhile, id: \.self) { event in
+                        HStack(alignment: .top, spacing: 8) {
+                            Circle().fill(Color.emerald.opacity(0.6)).frame(width: 6, height: 6).padding(.top, 6)
+                            Text(event)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.emerald.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .transition(.opacity)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
+    }
+}
+
+struct InfoRow: View {
+    let symbol: String
+    let title: String
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: symbol)
+                .foregroundStyle(Color.emerald)
+                .frame(width: 22)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(text)
+                    .font(.subheadline)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 }

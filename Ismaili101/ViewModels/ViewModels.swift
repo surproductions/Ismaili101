@@ -7,31 +7,60 @@ final class LearnViewModel: ObservableObject {
     init(chapters: [Chapter] = ChaptersData.all) { self.chapters = chapters }
 }
 
-/// State for one chapter's knowledge check.
-final class QuizViewModel: ObservableObject {
-    let questions: [QuizQuestion]
-    @Published private(set) var selections: [Int: Int] = [:]   // question index -> chosen option
+extension QuizQuestion {
+    /// Same question with its options in random order (keeps answers from always being "A").
+    func withShuffledOptions() -> QuizQuestion {
+        let order = options.indices.shuffled()
+        return QuizQuestion(prompt: prompt,
+                            options: order.map { options[$0] },
+                            correctIndex: order.firstIndex(of: correctIndex) ?? 0,
+                            explanation: explanation)
+    }
+}
 
-    init(questions: [QuizQuestion]) { self.questions = questions }
+/// One chapter's knowledge check: a bank of questions served in rounds,
+/// favouring questions the learner hasn't mastered yet.
+final class QuizViewModel: ObservableObject {
+    static let roundSize = 5
+
+    let bank: [QuizQuestion]
+    @Published private(set) var questions: [QuizQuestion] = []   // current round
+    @Published private(set) var selections: [Int: Int] = [:]     // question index -> chosen option
+    @Published private(set) var round = 0
+    /// Called when a question is answered correctly (used to record mastery).
+    var onCorrect: ((QuizQuestion) -> Void)?
+
+    init(bank: [QuizQuestion]) { self.bank = bank }
+
+    var hasStarted: Bool { round > 0 }
+
+    func startRound(mastered: Set<String>) {
+        let fresh = bank.filter { !mastered.contains($0.prompt) }.shuffled()
+        let review = bank.filter { mastered.contains($0.prompt) }.shuffled()
+        let picked = Array((fresh + review).prefix(Self.roundSize))
+        withAnimation(.spring()) {
+            questions = picked.map { $0.withShuffledOptions() }
+            selections = [:]
+            round += 1
+        }
+    }
 
     func select(_ option: Int, for questionIndex: Int) {
         guard selections[questionIndex] == nil else { return }  // lock first answer
         withAnimation(.spring()) { selections[questionIndex] = option }
-        if option == questions[questionIndex].correctIndex {
+        let question = questions[questionIndex]
+        if option == question.correctIndex {
             Haptics.success()
+            onCorrect?(question)
         } else {
             Haptics.error()
         }
     }
 
-    var isFinished: Bool { selections.count == questions.count }
+    var isFinished: Bool { !questions.isEmpty && selections.count == questions.count }
 
     var score: Int {
         selections.filter { questions[$0.key].correctIndex == $0.value }.count
-    }
-
-    func reset() {
-        withAnimation(.spring()) { selections = [:] }
     }
 }
 

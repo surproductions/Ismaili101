@@ -5,36 +5,35 @@ struct JeopardyView: View {
     @EnvironmentObject private var progress: ProgressStore
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                AmbientBackground()
-                ScrollView {
-                    VStack(spacing: 16) {
-                        Scoreboard(score: vm.score, streak: vm.streak,
-                                   multiplier: vm.multiplier, best: progress.bestJeopardyScore)
-                        board
-                        if vm.isGameOver { gameOverCard }
-                    }
-                    .padding()
+        ZStack {
+            AmbientBackground()
+            ScrollView {
+                VStack(spacing: 16) {
+                    Scoreboard(score: vm.score, streak: vm.streak,
+                               multiplier: vm.multiplier, best: progress.bestJeopardyScore)
+                    board
+                    if vm.isGameOver { gameOverCard }
+                }
+                .padding()
+            }
+        }
+        .navigationTitle("Jeopardy")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    Haptics.tap(.medium)
+                    vm.reset()
+                } label: {
+                    Label("New game", systemImage: "arrow.counterclockwise")
                 }
             }
-            .navigationTitle("Jeopardy")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        Haptics.tap(.medium)
-                        vm.reset()
-                    } label: {
-                        Label("New game", systemImage: "arrow.counterclockwise")
-                    }
-                }
-            }
-            .sheet(item: $vm.activeClue) { clue in
-                ClueSheet(clue: clue, vm: vm)
-            }
-            .onChange(of: vm.isGameOver) { over in
-                if over { progress.recordJeopardyScore(vm.score) }
-            }
+        }
+        .sheet(item: $vm.activeClue) { clue in
+            ClueSheet(clue: clue, vm: vm)
+        }
+        .onChange(of: vm.isGameOver) { over in
+            if over { progress.recordJeopardyScore(vm.score) }
         }
     }
 

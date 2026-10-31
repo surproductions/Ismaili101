@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum LearnRoute: Hashable {
+    case path
+    case daily(Int)
+}
+
 struct LearnView: View {
     @StateObject private var vm = LearnViewModel()
     @EnvironmentObject private var progress: ProgressStore
@@ -10,6 +15,13 @@ struct LearnView: View {
                 AmbientBackground()
                 ScrollView {
                     VStack(spacing: 16) {
+                        TodayCard()
+                        NavigationLink(value: LearnRoute.path) {
+                            Label("See the full 28-day Daily Path", systemImage: "calendar")
+                                .font(.subheadline.weight(.semibold))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .padding(.horizontal, 4)
                         progressHeader
                         ForEach(vm.chapters) { chapter in
                             NavigationLink(value: chapter) {
@@ -24,6 +36,14 @@ struct LearnView: View {
             }
             .navigationTitle("Ismaili 101")
             .navigationDestination(for: Chapter.self) { ChapterDetailView(chapter: $0) }
+            .navigationDestination(for: LearnRoute.self) { route in
+                switch route {
+                case .path:
+                    DailyPathView()
+                case .daily(let day):
+                    DailyReadingView(reading: DailyData.all[day - 1])
+                }
+            }
         }
     }
 
