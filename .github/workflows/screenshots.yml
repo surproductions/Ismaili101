@@ -30,7 +30,12 @@ jobs:
             ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
             SYMROOT="$PWD/build" \
             CODE_SIGNING_ALLOWED=NO \
-            build | tail -20
+            build 2>&1 | tee build.log | tail -20
+          exit ${PIPESTATUS[0]}
+
+      - name: Report compile errors
+        if: failure()
+        run: grep -E "error:" build.log | sort -u | head -40 | while read -r line; do echo "::error::$line"; done
 
       - name: Boot simulator
         run: |

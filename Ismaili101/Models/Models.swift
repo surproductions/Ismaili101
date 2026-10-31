@@ -300,7 +300,7 @@ struct MuslimGroup: Identifiable, Hashable {
 
 // MARK: - Sources
 
-struct SourceLink: Identifiable, Hashable {
+struct SourceLink: Identifiable, Hashable, Codable {
     var id: String { url }
     let title: String
     let url: String

@@ -31,7 +31,12 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            build
+            build 2>&1 | tee build.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Report compile errors
+        if: failure()
+        run: grep -E "error:" build.log | sort -u | head -40 | while read -r line; do echo "::error::$line"; done
 
       - name: Package IPA
         run: |
