@@ -1,0 +1,91 @@
+import Foundation
+
+enum JeopardyData {
+    static let categories: [JeopardyCategory] = [
+        JeopardyCategory(title: "Philosophy", symbol: "brain.head.profile", clues: [
+            JeopardyClue(value: 100, question: "This term means the outward, apparent dimension of something.",
+                         options: ["Batin", "Zahir", "Ta'wil", "Nass"], correctIndex: 1,
+                         explanation: "Zahir is the exoteric, outward form."),
+            JeopardyClue(value: 200, question: "This term means the inner, spiritual dimension.",
+                         options: ["Zahir", "Dunya", "Batin", "Khidmat"], correctIndex: 2,
+                         explanation: "Batin is the esoteric, inner meaning."),
+            JeopardyClue(value: 300, question: "Ta'wil literally means to bring something back to its…",
+                         options: ["Owner", "Origin", "Language", "Country"], correctIndex: 1,
+                         explanation: "From a root meaning 'to return to the first'."),
+            JeopardyClue(value: 400, question: "'Aql is usually translated as…",
+                         options: ["Soul", "Intellect", "Body", "Law"], correctIndex: 1,
+                         explanation: "'Aql means intellect or reason."),
+            JeopardyClue(value: 500, question: "In al-Sijistani's cosmology, the first originated being is the Universal…",
+                         options: ["Soul", "Intellect", "Body", "Light"], correctIndex: 1,
+                         explanation: "The Universal Intellect, followed by the Universal Soul.")
+        ]),
+        JeopardyCategory(title: "Fatimids", symbol: "building.columns.fill", clues: [
+            JeopardyClue(value: 100, question: "The Fatimids founded this city in 969.",
+                         options: ["Baghdad", "Cairo", "Damascus", "Tunis"], correctIndex: 1,
+                         explanation: "Al-Qahira — Cairo — under Imam al-Mu'izz."),
+            JeopardyClue(value: 200, question: "This Cairo mosque, built 970–972, became a famous centre of learning.",
+                         options: ["Al-Azhar", "Ibn Tulun", "Umayyad Mosque", "Al-Aqsa"], correctIndex: 0,
+                         explanation: "Al-Azhar is among the world's oldest continuously operating institutions of learning."),
+            JeopardyClue(value: 300, question: "Imam al-Hakim founded this 'House of Knowledge' in 1005.",
+                         options: ["Bayt al-Hikma", "Dar al-'Ilm", "Nizamiyya", "Jamatkhana"], correctIndex: 1,
+                         explanation: "The Dar al-'Ilm was a public library and teaching centre."),
+            JeopardyClue(value: 400, question: "The Fatimid state was first founded in 909 in this region.",
+                         options: ["Persia", "North Africa", "India", "Syria"], correctIndex: 1,
+                         explanation: "Ifriqiya — roughly today's Tunisia."),
+            JeopardyClue(value: 500, question: "This Persian poet-philosopher visited Cairo under al-Mustansir and became a da'i.",
+                         options: ["Rumi", "Nasir Khusraw", "Hafiz", "Ferdowsi"], correctIndex: 1,
+                         explanation: "Nasir Khusraw, author of Wajh-i Din and a famous travelogue.")
+        ]),
+        JeopardyCategory(title: "Imams", symbol: "crown.fill", clues: [
+            JeopardyClue(value: 100, question: "Who is the 50th and present Imam?",
+                         options: ["Aga Khan III", "Aga Khan IV", "Aga Khan V", "Aga Khan II"], correctIndex: 2,
+                         explanation: "Prince Rahim Aga Khan V, since 4 February 2025."),
+            JeopardyClue(value: 200, question: "Aga Khan III was president of this body's Assembly in 1937.",
+                         options: ["United Nations", "League of Nations", "Red Cross", "Olympic Committee"], correctIndex: 1,
+                         explanation: "He presided over the League of Nations Assembly."),
+            JeopardyClue(value: 300, question: "The title 'Aga Khan' was first granted by the ruler of…",
+                         options: ["Persia", "Ottoman Turkey", "Britain", "Afghanistan"], correctIndex: 0,
+                         explanation: "Fath Ali Shah Qajar, around 1818."),
+            JeopardyClue(value: 400, question: "Aga Khan IV competed at the 1964 Winter Olympics in…",
+                         options: ["Figure skating", "Alpine skiing", "Bobsleigh", "Ice hockey"], correctIndex: 1,
+                         explanation: "He skied for Iran at Innsbruck."),
+            JeopardyClue(value: 500, question: "This mountain fortress was the Nizari Imams' centre until 1256.",
+                         options: ["Masyaf", "Alamut", "Anjudan", "Lamasar"], correctIndex: 1,
+                         explanation: "Alamut fell to the Mongols in 1256.")
+        ]),
+        JeopardyCategory(title: "AKDN", symbol: "globe.americas.fill", clues: [
+            JeopardyClue(value: 100, question: "AKDN works in roughly how many countries?",
+                         options: ["5", "12", "30+", "150"], correctIndex: 2,
+                         explanation: "Over 30, mostly in Africa and Asia."),
+            JeopardyClue(value: 200, question: "The Aga Khan Award for Architecture was established in…",
+                         options: ["1957", "1977", "1999", "2010"], correctIndex: 1,
+                         explanation: "Founded in 1977, awarded every three years."),
+            JeopardyClue(value: 300, question: "Cairo's Al-Azhar Park was built on top of…",
+                         options: ["A lake", "A centuries-old rubbish mound", "An airport", "A palace"], correctIndex: 1,
+                         explanation: "AKTC transformed a long-standing debris mound into a park."),
+            JeopardyClue(value: 400, question: "The Aga Khan Museum is in which city?",
+                         options: ["London", "Toronto", "Lisbon", "Geneva"], correctIndex: 1,
+                         explanation: "It opened in Toronto in 2014."),
+            JeopardyClue(value: 500, question: "Aga Khan University was chartered in 1983 in…",
+                         options: ["Kenya", "Pakistan", "India", "UK"], correctIndex: 1,
+                         explanation: "Chartered in Pakistan, headquartered in Karachi.")
+        ]),
+        JeopardyCategory(title: "Faith & Science", symbol: "atom", clues: [
+            JeopardyClue(value: 100, question: "Ismaili thought generally sees faith and reason as…",
+                         options: ["Opposed", "Complementary", "Unrelated", "Forbidden"], correctIndex: 1,
+                         explanation: "Two complementary ways of understanding creation."),
+            JeopardyClue(value: 200, question: "Which 13th-century astronomer worked for years among the Nizaris of Persia?",
+                         options: ["Ibn Sina", "Nasir al-Din al-Tusi", "Al-Biruni", "Omar Khayyam"], correctIndex: 1,
+                         explanation: "Al-Tusi wrote several works while in Nizari fortresses."),
+            JeopardyClue(value: 300, question: "The encyclopedic Epistles of the Brethren of Purity covered…",
+                         options: ["Only law", "Maths, sciences, music and philosophy", "Only poetry", "Only history"], correctIndex: 1,
+                         explanation: "The 10th-century Rasa'il Ikhwan al-Safa' spanned many sciences; many scholars link them to an Ismaili milieu."),
+            JeopardyClue(value: 400, question: "Reading creation stories symbolically draws on which practice?",
+                         options: ["Ta'wil", "Taqlid", "Tanzil", "Tawaf"], correctIndex: 0,
+                         explanation: "Ta'wil seeks the inner meaning behind the outward text."),
+            JeopardyClue(value: 500, question: "Which faculty, in classical Ismaili thought, lets humans recognise truth?",
+                         options: ["'Aql", "Nafs alone", "The senses alone", "Memory"], correctIndex: 0,
+                         explanation: "'Aql — the intellect.")
+        ])
+    ]
+}

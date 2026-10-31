@@ -1,0 +1,114 @@
+import Foundation
+
+// All models are Codable so the bundled Swift datasets can be moved to JSON
+// files (or fetched from a server) later without touching the views.
+
+// MARK: - Learn
+
+struct Chapter: Identifiable, Codable, Hashable {
+    let id: Int              // chapter number
+    let title: String
+    let subtitle: String
+    let symbol: String       // SF Symbol name
+    let overview: [String]   // short paragraphs
+    let keyTerms: [KeyTerm]
+    let quiz: [QuizQuestion] // two-question knowledge check
+}
+
+struct KeyTerm: Identifiable, Codable, Hashable {
+    var id: String { term }
+    let term: String
+    let definition: String
+}
+
+struct QuizQuestion: Identifiable, Codable, Hashable {
+    var id: String { prompt }
+    let prompt: String
+    let options: [String]
+    let correctIndex: Int
+    let explanation: String
+}
+
+// MARK: - Imams
+
+enum ImamEra: String, Codable, CaseIterable, Identifiable {
+    case all = "All"
+    case early = "Early History"
+    case fatimid = "Fatimid Era"
+    case alamut = "Alamut / Persian"
+    case modern = "Modern Era"
+
+    var id: String { rawValue }
+
+    var symbol: String {
+        switch self {
+        case .all: return "list.bullet"
+        case .early: return "sunrise.fill"
+        case .fatimid: return "building.columns.fill"
+        case .alamut: return "mountain.2.fill"
+        case .modern: return "globe"
+        }
+    }
+}
+
+struct Imam: Identifiable, Codable, Hashable {
+    var id: Int { number }
+    let number: Int
+    let name: String
+    let era: ImamEra
+    let period: String      // e.g. "Imamat 1957–2025"
+    let summary: String
+    let coolFact: String
+    var isPresentImam: Bool = false
+}
+
+// MARK: - Impact
+
+struct Institution: Identifiable, Codable, Hashable {
+    var id: String { acronym }
+    let acronym: String
+    let name: String
+    let symbol: String
+    let focus: String
+    let description: String
+    let highlights: [String]
+}
+
+struct ImpactMetric: Identifiable, Codable, Hashable {
+    var id: String { label }
+    let value: Double
+    let prefix: String
+    let suffix: String
+    let label: String
+    let symbol: String
+    let source: String      // shown in small print so figures stay checkable
+}
+
+// MARK: - Jeopardy
+
+struct JeopardyCategory: Identifiable, Codable, Hashable {
+    var id: String { title }
+    let title: String
+    let symbol: String
+    let clues: [JeopardyClue]   // ordered by value, 100…500
+}
+
+struct JeopardyClue: Identifiable, Codable, Hashable {
+    var id: String { question }
+    let value: Int
+    let question: String
+    let options: [String]
+    let correctIndex: Int
+    let explanation: String
+}
+
+// MARK: - Explore
+
+struct QAItem: Identifiable, Codable, Hashable {
+    var id: String { question }
+    let question: String
+    let category: String
+    let tags: [String]          // extra search keywords
+    let answer: [String]        // paragraphs
+    var furtherReading: String? = nil
+}
