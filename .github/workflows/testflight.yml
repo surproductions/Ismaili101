@@ -31,7 +31,11 @@ jobs:
     steps:
       - id: find
         env:
-          SECRETS_JSON: ${{ toJSON(secrets) }}
+          SECRETS_JSON: >-
+            {"ASC_KEY_ID": ${{ toJSON(secrets.ASC_KEY_ID) }},
+             "ASC_ISSUER_ID": ${{ toJSON(secrets.ASC_ISSUER_ID) }},
+             "ASC_KEY_P8": ${{ toJSON(secrets.ASC_KEY_P8) }},
+             "APPLE_TEAM_ID": ${{ toJSON(secrets.APPLE_TEAM_ID) }}}
           INPUT_BUNDLE: ${{ github.event.inputs.bundle_id }}
           INPUT_TEAM: ${{ github.event.inputs.team_id }}
         run: |
@@ -40,7 +44,7 @@ jobs:
           import base64, json, os, re, time
           import jwt, requests
 
-          secrets = {k: v for k, v in json.loads(os.environ["SECRETS_JSON"]).items() if k.lower() != "github_token"}
+          secrets = {k: v for k, v in json.loads(os.environ["SECRETS_JSON"]).items() if v}
           print(f"::notice title=Secret names found::{', '.join(sorted(secrets)) or 'none'}")
 
           def find(patterns, exclude=()):
@@ -138,12 +142,9 @@ jobs:
     env:
       BUNDLE_ID: ${{ needs.lookup.outputs.bundle_id }}
       TEAM_ID: ${{ needs.lookup.outputs.team_id }}
-      KEY_ID: ${{ secrets[needs.lookup.outputs.key_id_name] }}
-      ISSUER_ID: ${{ secrets[needs.lookup.outputs.issuer_name] }}
-      PRIVATE_KEY: ${{ secrets[needs.lookup.outputs.private_key_name] }}
-      P12: ${{ secrets[needs.lookup.outputs.p12_name] }}
-      P12_PASSWORD: ${{ secrets[needs.lookup.outputs.p12_password_name] }}
-      PROFILE: ${{ secrets[needs.lookup.outputs.profile_name] }}
+      KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      PRIVATE_KEY: ${{ secrets.ASC_KEY_P8 }}
     steps:
       - uses: actions/checkout@v4
 
