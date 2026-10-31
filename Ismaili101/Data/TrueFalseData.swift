@@ -49,6 +49,14 @@ enum TrueFalseData {
         TF("Imam Mustansir bi'llah II settled at Anjudan.", true, "Beginning the Anjudan revival."),
         TF("The Imamat ended when Alamut fell.", false, "The Imamat continued without break."),
         TF("Ta'yid means divine support granted to the Prophet and the Imams.", true, "It perfects the Imam's understanding."),
-        TF("The Qur'an calls natural phenomena 'signs' (ayat).", true, "The same word used for its verses.")
+        TF("The Qur'an calls natural phenomena 'signs' (ayat).", true, "The same word used for its verses."),
+        TF("The word 'algorithm' comes from the name of al-Khwarizmi.", true, "From the Latin form of his name."),
+        TF("Ibn al-Haytham taught that the eye sends out rays to see objects.", false, "He showed light travels from objects into the eye."),
+        TF("Ibn al-Haytham worked in Fatimid Cairo.", true, "During the reign of Imam al-Hakim."),
+        TF("Ibn al-Nafis described blood flowing through the lungs about 300 years before European anatomists.", true, "In 1242."),
+        TF("The Tusi couple appears in Copernicus's 1543 book.", true, "Al-Tusi's device reappears in Copernicus's work."),
+        TF("A crater on the Moon is named after the Fatimid astronomer Ibn Yunus.", true, "His eclipse records were used centuries later."),
+        TF("The Qarawiyyin in Fez was founded by a woman, Fatima al-Fihri.", true, "In 859."),
+        TF("Georges Lemaître, who first proposed the Big Bang theory, was an atheist.", false, "He was a Catholic priest.")
     ]
 }

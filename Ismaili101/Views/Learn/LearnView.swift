@@ -3,6 +3,7 @@ import SwiftUI
 enum LearnRoute: Hashable {
     case path
     case daily(Int)
+    case faithScience
 }
 
 struct LearnView: View {
@@ -22,6 +23,7 @@ struct LearnView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(.horizontal, 4)
+                        FaithScienceCard()
                         progressHeader
                         ForEach(vm.chapters) { chapter in
                             NavigationLink(value: chapter) {
@@ -42,6 +44,8 @@ struct LearnView: View {
                     DailyPathView()
                 case .daily(let day):
                     DailyReadingView(reading: DailyData.all[day - 1])
+                case .faithScience:
+                    FaithScienceView()
                 }
             }
         }

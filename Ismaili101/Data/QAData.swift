@@ -107,6 +107,21 @@ enum QAData {
                 "Animals, in classical Ismaili thought, have a sensing soul — they feel and suffer — and humans are responsible for treating them well. Muslim tradition praises kindness to animals and condemns cruelty: the Prophet told of a man forgiven for watering a thirsty dog.",
                 "There is no single Ismaili ruling on keeping pets; families choose for themselves. If you keep an animal, care for it with compassion. For specific questions, ask your local religious education teachers."
                ]),
+        QAItem(question: "Did the Qur'an predict modern science?",
+               category: "Faith & Science",
+               tags: ["science", "miracles", "quran", "big bang", "atheist", "proof", "embryology"],
+               answer: [
+                "Some people point to verses that seem to match later discoveries, such as an expanding universe or stages of the embryo. Supporters find these meaningful; critics note the verses can be read in several ways and that such readings usually appear after a discovery. They are not scientific proof.",
+                "What is well documented is that scientists in Muslim societies made major discoveries centuries before Europe — in algebra, optics, medicine and astronomy. The Ismaili tradition sees faith and science as complementary, and reads scripture for its inner meaning rather than as a science textbook.",
+                "See 'Faith & Science' on the Learn tab."
+               ]),
+        QAItem(question: "What did Muslim scientists discover?",
+               category: "Faith & Science",
+               tags: ["inventions", "discoveries", "algebra", "optics", "medicine", "golden age", "muslim scientists"],
+               answer: [
+                "Highlights include al-Khwarizmi's algebra (c. 820), Ibn al-Haytham's optics in Fatimid Cairo (c. 1011–1021), Ibn Sina's Canon of Medicine, Ibn al-Nafis's description of blood flow through the lungs (1242), and al-Tusi's astronomy, later echoed by Copernicus.",
+                "Several are linked to Ismaili history, such as the Fatimid astronomer Ibn Yunus and al-Tusi's years among the Nizaris."
+               ]),
         QAItem(question: "What is the Du'a and when is it recited?",
                category: "Practice",
                tags: ["prayer", "dua", "du'a", "namaz", "salah"],

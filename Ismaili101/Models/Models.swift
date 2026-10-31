@@ -222,3 +222,50 @@ struct Contribution: Identifiable, Hashable {
     let era: String
     let text: String
 }
+
+// MARK: - Faith & Science
+
+enum ScienceField: String, CaseIterable, Identifiable {
+    case maths = "Maths", astronomy = "Astronomy", medicine = "Medicine", physics = "Physics & optics",
+         engineering = "Engineering", geography = "Geography", learning = "Learning"
+    var id: String { rawValue }
+    var symbol: String {
+        switch self {
+        case .maths: return "function"
+        case .astronomy: return "moon.stars.fill"
+        case .medicine: return "cross.case.fill"
+        case .physics: return "eye.fill"
+        case .engineering: return "gearshape.2.fill"
+        case .geography: return "map.fill"
+        case .learning: return "building.columns.fill"
+        }
+    }
+}
+
+struct Discovery: Identifiable, Hashable {
+    var id: String { title }
+    let title: String
+    let person: String
+    let when: String
+    let place: String
+    let field: ScienceField
+    let text: String
+    var lastingImpact: String? = nil
+    var ismailiLink: String? = nil   // connection to Fatimid / Nizari / Ismaili history
+}
+
+struct InspiringVerse: Identifiable, Hashable {
+    var id: String { reference }
+    let reference: String
+    let text: String        // short English rendering
+    let note: String
+}
+
+struct DebatedClaim: Identifiable, Hashable {
+    var id: String { reference }
+    let reference: String
+    let topic: String
+    let verse: String
+    let supporters: String
+    let critics: String
+}
