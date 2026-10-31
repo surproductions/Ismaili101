@@ -26,6 +26,7 @@ struct ImpactView: View {
                             agencies
                         } else {
                             ContributionsView()
+                            SourcesList(sources: Sources.contributions)
                         }
                     }
                     .padding()
@@ -65,6 +66,7 @@ struct ImpactView: View {
         Text("Figures from AKDN, Aga Khan University and University of Central Asia public pages; they change over time.")
             .font(.caption2)
             .foregroundStyle(.secondary)
+        SourcesList(sources: Sources.impact)
     }
 }
 
@@ -239,11 +241,7 @@ struct InstitutionDetail: View {
                     }
                     .card()
 
-                    if !institution.source.isEmpty {
-                        Text("Source: \(institution.source)")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
+                    SourcesList(sources: Sources.byAgency[institution.acronym] ?? [])
                 }
                 .padding()
             }

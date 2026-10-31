@@ -32,6 +32,7 @@ struct CompareView: View {
                 Text("Follower figures: Pew Research Center 2020 estimates, unless noted.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                SourcesList(sources: Sources.compare)
             } else {
                 Text("Muslims share the Qur'an, the Prophet and belief in one God. They differ mainly on who should lead and interpret the faith after the Prophet.")
                     .font(.subheadline)

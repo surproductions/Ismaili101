@@ -4,25 +4,9 @@ import SwiftUI
 struct FaithScienceCard: View {
     var body: some View {
         NavigationLink(value: LearnRoute.faithScience) {
-            HStack(spacing: 14) {
-                Image(systemName: "atom")
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .frame(width: 52, height: 52)
-                    .background(LinearGradient.brand, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Faith & Science")
-                        .font(.headline)
-                        .foregroundStyle(.primary)
-                    Text("Muslim discoveries, the 'miracles' debate, and how it all fits")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.leading)
-                }
-                Spacer()
-                Image(systemName: "chevron.right").foregroundStyle(.secondary)
-            }
-            .card()
+            LinkCard(title: "Faith & Science",
+                     subtitle: "Muslim discoveries, the 'miracles' debate, and how it all fits",
+                     symbol: "atom")
         }
         .buttonStyle(SpringButtonStyle())
     }
@@ -80,6 +64,7 @@ struct FaithScienceView: View {
         }
 
         ForEach(discoveries) { DiscoveryCard(discovery: $0) }
+        SourcesList(sources: Sources.faithScience)
     }
 
     private func fieldChip(_ value: ScienceField?, label: String, symbol: String) -> some View {
@@ -147,6 +132,8 @@ struct FaithScienceView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.gold.opacity(0.12), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        SourcesList(sources: [Src.quran("21:30", "21/30"), Src.quran("51:47", "51/47"),
+                              Src.quran("23:12–14", "23/12-14"), Src.quran("55:19–20", "55/19-20")])
     }
 
     // MARK: Fits
@@ -160,6 +147,7 @@ struct FaithScienceView: View {
         ForEach(Array(FaithScienceData.fitsWith.enumerated()), id: \.element.id) { index, lesson in
             LessonCard(lesson: lesson, number: index + 1)
         }
+        SourcesList(sources: Sources.faithScience)
     }
 }
 

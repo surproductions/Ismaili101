@@ -3,7 +3,11 @@ import SwiftUI
 struct ExploreView: View {
     enum Pane: String, CaseIterable { case questions = "Q&A", compare = "Compare" }
 
-    @StateObject private var vm = ExploreViewModel()
+    @StateObject private var vm: ExploreViewModel = {
+        let model = ExploreViewModel()
+        if LaunchScreen.is(.search) { model.query = "soul" }
+        return model
+    }()
     @State private var pane: Pane = (LaunchScreen.is(.compare) || LaunchScreen.is(.groups)) ? .compare : .questions
 
     var body: some View {
@@ -23,12 +27,25 @@ struct ExploreView: View {
                         } else {
                             suggestionChips
 
-                            if vm.results.isEmpty {
+                            let hits = vm.lessonHits
+                            if vm.results.isEmpty && hits.isEmpty {
                                 emptyState
                             } else {
+                                if !vm.query.isEmpty && !vm.results.isEmpty {
+                                    SectionHeader(title: "Questions & answers")
+                                }
                                 ForEach(vm.results) { item in
                                     QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
                                         vm.toggle(item)
+                                    }
+                                }
+                                if !hits.isEmpty {
+                                    SectionHeader(title: "In lessons & guides")
+                                    ForEach(hits) { hit in
+                                        NavigationLink(value: hit) {
+                                            LinkCard(title: hit.title, subtitle: hit.kind, symbol: hit.symbol)
+                                        }
+                                        .buttonStyle(SpringButtonStyle())
                                     }
                                 }
                             }
@@ -45,6 +62,13 @@ struct ExploreView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
             .navigationTitle("Explore")
+            .navigationDestination(for: SearchHit.self) { hit in
+                switch hit {
+                case .chapter(let chapter): ChapterDetailView(chapter: chapter)
+                case .daily(let reading): DailyReadingView(reading: reading)
+                case .guide(let page): GuideView(page: page)
+                }
+            }
             .searchable(text: $vm.query, placement: .navigationBarDrawer(displayMode: .always),
                         prompt: pane == .questions ? "Search questions or topics" : "Search religions")
         }

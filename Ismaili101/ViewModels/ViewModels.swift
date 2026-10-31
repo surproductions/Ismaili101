@@ -151,6 +151,45 @@ final class JeopardyViewModel: ObservableObject {
 
 // MARK: - Explore
 
+/// A search result outside the Q&A: a chapter, a Daily Path reading or a guide.
+enum SearchHit: Hashable, Identifiable {
+    case chapter(Chapter)
+    case daily(DailyReading)
+    case guide(GuidePage)
+
+    var id: String {
+        switch self {
+        case .chapter(let c): return "chapter-\(c.id)"
+        case .daily(let d): return "daily-\(d.day)"
+        case .guide(let g): return "guide-\(g.title)"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .chapter(let c): return "Chapter \(c.id): \(c.title)"
+        case .daily(let d): return "Day \(d.day): \(d.title)"
+        case .guide(let g): return g.title
+        }
+    }
+
+    var kind: String {
+        switch self {
+        case .chapter: return "Chapter"
+        case .daily: return "Daily Path"
+        case .guide: return "Guide"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .chapter(let c): return c.symbol
+        case .daily(let d): return d.symbol
+        case .guide(let g): return g.symbol
+        }
+    }
+}
+
 final class ExploreViewModel: ObservableObject {
     @Published var query = ""
     @Published var expanded: Set<String> = []
@@ -170,6 +209,31 @@ final class ExploreViewModel: ObservableObject {
                 .lowercased()
             return words.allSatisfy { haystack.contains($0) }
         }
+    }
+
+    /// Matches across chapters, lessons, Daily Path readings and guides.
+    var lessonHits: [SearchHit] {
+        let words = query.lowercased().split(separator: " ").map(String.init).filter { $0.count > 1 }
+        guard !words.isEmpty else { return [] }
+        func matches(_ parts: [String]) -> Bool {
+            let text = parts.joined(separator: " ").lowercased()
+            return words.allSatisfy { text.contains($0) }
+        }
+        var hits: [SearchHit] = []
+        for chapter in ChaptersData.all {
+            let parts = [chapter.title, chapter.subtitle] + chapter.overview
+                + chapter.keyTerms.flatMap { [$0.term, $0.definition] }
+                + chapter.lessons.flatMap { [$0.heading] + $0.body }
+            if matches(parts) { hits.append(.chapter(chapter)) }
+        }
+        for reading in DailyData.all where matches([reading.title] + reading.paragraphs) {
+            hits.append(.daily(reading))
+        }
+        for page in GuideData.all {
+            let parts = [page.title, page.subtitle, page.intro] + page.sections.flatMap { [$0.heading] + $0.body }
+            if matches(parts) { hits.append(.guide(page)) }
+        }
+        return Array(hits.prefix(12))
     }
 
     func toggle(_ item: QAItem) {

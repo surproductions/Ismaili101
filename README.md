@@ -50,6 +50,14 @@ Some details in the original brief were outdated or inaccurate and were correcte
 
 The theological and ethical answers (especially the philosophy chapters, neurodivergence and evolution) are written in general, introductory terms and **do not speak for the Imamat**. Have all content reviewed by community educators (e.g. your local ITREB) before release.
 
+## Sources and review
+
+Every chapter and section ends with a tappable **Sources** list, and **Learn → ⓘ → About & Sources** collects them all with a note that the app is independent and not an official publication. Data lives in `Data/Sources.swift`.
+
+## Simulator screenshots
+
+`.github/workflows/screenshots.yml` builds the app for an iPhone simulator, opens each screen with the `-screen <name>` launch argument, captures light and dark screenshots, and pushes them to the `screenshots` branch.
+
 ## Ideas for next steps
 - Move datasets to JSON in the bundle, or load from a CMS.
 - Add an "AI Q&A" backend to Explore (the search is currently local keyword matching).

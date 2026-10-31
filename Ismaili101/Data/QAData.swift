@@ -152,6 +152,34 @@ enum QAData {
                 "After the Prophet died in 632, Muslims disagreed about who should lead. Most accepted Abu Bakr, chosen at Saqifa, and the caliphs after him — they became Sunni Muslims. Others held that the Prophet had designated Ali at Ghadir Khumm — they became the Shia.",
                 "The Shia later divided over the line of Imams into Zaydis, Twelvers and Ismailis. See Chapter 16 and Explore → Compare → Within Islam."
                ]),
+        QAItem(question: "What are Imamat Day and Salgirah?",
+               category: "Festivals",
+               tags: ["imamat day", "salgirah", "khushiali", "festival", "navroz", "eid", "celebration"],
+               answer: [
+                "Imamat Day (4 February) marks the anniversary of Prince Rahim Aga Khan V's accession to the Imamat in 2025. Salgirah (12 October) celebrates the present Imam's birthday.",
+                "Ismailis also celebrate Navroz, the two Eids, Eid-e-Ghadir and other days. See 'Festivals & Calendar' on the Learn tab."
+               ]),
+        QAItem(question: "Who were the pirs?",
+               category: "History",
+               tags: ["pir", "pirs", "ginans", "sadr al-din", "shams", "khoja", "satpanth"],
+               answer: [
+                "The pirs were teachers sent to South Asia who taught the faith through ginans — devotional songs in local languages. Pir Shams, Pir Sadr al-Din and Pir Hasan Kabir al-Din are among the most beloved.",
+                "Tradition credits Pir Sadr al-Din with founding early jamatkhanas and giving the Khoja community its name. See History → People."
+               ]),
+        QAItem(question: "Do Ismailis drink alcohol or smoke?",
+               category: "Everyday ethics",
+               tags: ["alcohol", "drinking", "smoking", "drugs", "halal", "haram"],
+               answer: [
+                "The Ismaili Imams have consistently urged their followers to avoid alcohol, smoking and drugs, because they harm the body and cloud the intellect. Aga Khan III called alcohol 'the greatest of all sins'.",
+                "The Imams condemned the acts, not the people — support and forgiveness remain open to anyone who is struggling. See 'Living Your Faith' on the Learn tab."
+               ]),
+        QAItem(question: "How is the Ismaili community organised?",
+               category: "Institutions",
+               tags: ["constitution", "council", "itreb", "cab", "mukhi", "kamadia", "institutions"],
+               answer: [
+                "The Ismaili Constitution (1986, renewed 1998) sets up National and local Councils, religious education boards (ITREB), Conciliation and Arbitration Boards and more. Each jamatkhana has a Mukhi and Kamadia.",
+                "Almost all of this is run by volunteers. See 'Community & Institutions' on the Learn tab."
+               ]),
         QAItem(question: "What is the Du'a and when is it recited?",
                category: "Practice",
                tags: ["prayer", "dua", "du'a", "namaz", "salah"],

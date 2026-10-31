@@ -4,6 +4,8 @@ enum LearnRoute: Hashable {
     case path
     case daily(Int)
     case faithScience
+    case guide(GuidePage)
+    case about
 }
 
 struct LearnView: View {
@@ -17,7 +19,7 @@ struct LearnView: View {
             ZStack {
                 AmbientBackground()
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 14) {
                         TodayCard()
                         NavigationLink(value: LearnRoute.path) {
                             Label("See the full 28-day Daily Path", systemImage: "calendar")
@@ -25,8 +27,18 @@ struct LearnView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(.horizontal, 4)
-                        FaithScienceCard()
                         progressHeader
+
+                        SectionHeader(title: "Explore more")
+                        FaithScienceCard()
+                        ForEach(GuideData.all) { page in
+                            NavigationLink(value: LearnRoute.guide(page)) {
+                                LinkCard(title: page.title, subtitle: page.subtitle, symbol: page.symbol)
+                            }
+                            .buttonStyle(SpringButtonStyle())
+                        }
+
+                        SectionHeader(title: "Chapters")
                         ForEach(vm.chapters) { chapter in
                             NavigationLink(value: chapter) {
                                 ChapterRow(chapter: chapter, isDone: progress.isCompleted(chapter))
@@ -48,6 +60,18 @@ struct LearnView: View {
                     DailyReadingView(reading: DailyData.all[day - 1])
                 case .faithScience:
                     FaithScienceView()
+                case .guide(let page):
+                    GuideView(page: page)
+                case .about:
+                    AboutView()
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(value: LearnRoute.about) {
+                        Image(systemName: "info.circle")
+                    }
+                    .accessibilityLabel("About and sources")
                 }
             }
             .onAppear(perform: applyLaunchScreen)
@@ -62,6 +86,8 @@ struct LearnView: View {
         case .daily: path.append(LearnRoute.daily(1))
         case .path: path.append(LearnRoute.path)
         case .faith: path.append(LearnRoute.faithScience)
+        case .festivals: path.append(LearnRoute.guide(GuideData.festivals))
+        case .about: path.append(LearnRoute.about)
         default: break
         }
     }
@@ -87,6 +113,10 @@ struct LearnView: View {
                 Text("\(progress.completedChapters.count) of \(vm.chapters.count) chapters complete")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                Label(progress.streak == 1 ? "1-day streak" : "\(progress.streak)-day streak",
+                      systemImage: "flame.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(progress.streak > 0 ? Color.orange : Color.secondary)
             }
             Spacer()
         }

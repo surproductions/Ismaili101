@@ -46,6 +46,7 @@ struct ChapterDetailView: View {
                                            total: chapter.quiz.count,
                                            nextRound: startRound)
                     }
+                    SourcesList(sources: chapter.sources)
                 }
                 .padding()
             }

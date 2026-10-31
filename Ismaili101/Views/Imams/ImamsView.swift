@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct ImamsView: View {
-    enum Pane: String, CaseIterable { case imams = "Imams", journey = "Journey" }
+    enum Pane: String, CaseIterable { case imams = "Imams", journey = "Journey", people = "People" }
 
     @StateObject private var vm = ImamsViewModel()
-    @State private var section: Pane = LaunchScreen.is(.journey) ? .journey : .imams
+    @State private var section: Pane = LaunchScreen.is(.journey) ? .journey : (LaunchScreen.is(.figures) ? .people : .imams)
 
     var body: some View {
         NavigationStack {
@@ -21,6 +21,13 @@ struct ImamsView: View {
                         .onChange(of: section) { _ in Haptics.tap() }
 
                         if section == .imams {
+                            NavigationLink { AllImamsView() } label: {
+                                LinkCard(title: "All 50 Imams", subtitle: "The full line, from Hazrat Ali to Mawlana Hazar Imam",
+                                         symbol: "list.number", gold: true)
+                            }
+                            .buttonStyle(SpringButtonStyle())
+                            .padding(.horizontal)
+                            .padding(.bottom, 12)
                             eraFilter
                                 .padding(.bottom, 12)
                             Text("A selection of key Imams from the line of 50.")
@@ -36,8 +43,15 @@ struct ImamsView: View {
                                 }
                             }
                             .padding(.horizontal)
-                        } else {
+                            SourcesList(sources: Sources.imams)
+                                .padding(.horizontal)
+                        } else if section == .journey {
                             JourneyView()
+                            SourcesList(sources: Sources.journey)
+                                .padding(.horizontal)
+                                .padding(.top, 12)
+                        } else {
+                            PeopleView()
                         }
                     }
                     .padding(.vertical)
