@@ -9,9 +9,11 @@ enum LearnRoute: Hashable {
 struct LearnView: View {
     @StateObject private var vm = LearnViewModel()
     @EnvironmentObject private var progress: ProgressStore
+    @State private var path = NavigationPath()
+    @State private var appliedLaunch = false
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ZStack {
                 AmbientBackground()
                 ScrollView {
@@ -48,6 +50,19 @@ struct LearnView: View {
                     FaithScienceView()
                 }
             }
+            .onAppear(perform: applyLaunchScreen)
+        }
+    }
+
+    private func applyLaunchScreen() {
+        guard !appliedLaunch, let screen = LaunchScreen.current else { return }
+        appliedLaunch = true
+        switch screen {
+        case .chapter: if let chapter = vm.chapters.first(where: { $0.id == 13 }) { path.append(chapter) }
+        case .daily: path.append(LearnRoute.daily(1))
+        case .path: path.append(LearnRoute.path)
+        case .faith: path.append(LearnRoute.faithScience)
+        default: break
         }
     }
 

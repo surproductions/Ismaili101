@@ -1,0 +1,64 @@
+name: Simulator screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  screenshots:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build for simulator
+        run: |
+          xcodebuild \
+            -project Ismaili101.xcodeproj \
+            -target Ismaili101 \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            SYMROOT="$PWD/build" \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tail -20
+
+      - name: Boot simulator
+        run: |
+          UDID=$(xcrun simctl create shots com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro 2>/dev/null \
+              || xcrun simctl create shots com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro)
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryLevel 100 --cellularBars 4
+          xcrun simctl install "$UDID" build/Debug-iphonesimulator/Ismaili101.app
+
+      - name: Capture screenshots
+        run: |
+          BUNDLE=com.example.ismaili101
+          mkdir -p shots
+          capture () {
+            local mode=$1; shift
+            for screen in "$@"; do
+              xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
+              xcrun simctl launch "$UDID" "$BUNDLE" -screen "$screen" >/dev/null
+              sleep 5
+              xcrun simctl io "$UDID" screenshot "shots/${mode}-${screen}.png" >/dev/null
+            done
+          }
+          SCREENS="learn chapter daily path faith festivals about history imam journey figures impact agency contributions play jeopardy match truefalse timeline explore compare groups search"
+          xcrun simctl ui "$UDID" appearance light
+          capture light $SCREENS
+          xcrun simctl ui "$UDID" appearance dark
+          capture dark learn chapter imam journey agency jeopardy compare faith
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots/

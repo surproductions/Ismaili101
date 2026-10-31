@@ -4,7 +4,7 @@ struct ImamsView: View {
     enum Pane: String, CaseIterable { case imams = "Imams", journey = "Journey" }
 
     @StateObject private var vm = ImamsViewModel()
-    @State private var section: Pane = .imams
+    @State private var section: Pane = LaunchScreen.is(.journey) ? .journey : .imams
 
     var body: some View {
         NavigationStack {
@@ -103,7 +103,12 @@ struct TimelineRow: View {
 
 struct ImamCard: View {
     let imam: Imam
-    @State private var expanded = false
+    @State private var expanded: Bool
+
+    init(imam: Imam) {
+        self.imam = imam
+        _expanded = State(initialValue: LaunchScreen.is(.imam) && imam.number == 1)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {

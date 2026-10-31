@@ -4,7 +4,7 @@ struct ExploreView: View {
     enum Pane: String, CaseIterable { case questions = "Q&A", compare = "Compare" }
 
     @StateObject private var vm = ExploreViewModel()
-    @State private var pane: Pane = .questions
+    @State private var pane: Pane = (LaunchScreen.is(.compare) || LaunchScreen.is(.groups)) ? .compare : .questions
 
     var body: some View {
         NavigationStack {

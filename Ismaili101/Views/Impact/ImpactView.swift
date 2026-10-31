@@ -4,8 +4,9 @@ import MapKit
 struct ImpactView: View {
     enum Pane: String, CaseIterable { case agencies = "Agencies", contributions = "Contributions" }
 
-    @State private var selected: Institution?
-    @State private var pane: Pane = .agencies
+    @State private var selected: Institution? =
+        LaunchScreen.is(.agency) ? ImpactData.institutions.first(where: { $0.acronym == "AKAH" }) : nil
+    @State private var pane: Pane = LaunchScreen.is(.contributions) ? .contributions : .agencies
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 

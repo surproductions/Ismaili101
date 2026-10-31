@@ -3,7 +3,7 @@ import SwiftUI
 struct CompareView: View {
     enum Mode: String, CaseIterable { case religions = "Other religions", muslims = "Within Islam" }
     let query: String
-    @State private var mode: Mode = .religions
+    @State private var mode: Mode = LaunchScreen.is(.groups) ? .muslims : .religions
 
     private var religions: [ReligionProfile] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()

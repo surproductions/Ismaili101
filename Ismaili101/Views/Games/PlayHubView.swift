@@ -34,9 +34,18 @@ enum Game: String, CaseIterable, Identifiable, Hashable {
 
 struct PlayHubView: View {
     @EnvironmentObject private var progress: ProgressStore
+    @State private var path: [Game] = {
+        switch LaunchScreen.current {
+        case .jeopardy: return [.jeopardy]
+        case .match: return [.match]
+        case .truefalse: return [.trueFalse]
+        case .timeline: return [.timeline]
+        default: return []
+        }
+    }()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ZStack {
                 AmbientBackground()
                 ScrollView {
