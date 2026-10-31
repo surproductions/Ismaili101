@@ -4,7 +4,16 @@ import Foundation
 // community educators (e.g. your local ITREB / ITREC) before publishing.
 
 enum ChaptersData {
-    static let all: [Chapter] = [
+    /// Core chapters 1–10 plus philosophy chapters 11–14, with "Go deeper" lessons attached.
+    static let all: [Chapter] = (core + PhilosophyChapters.all).map { chapter in
+        var chapter = chapter
+        if chapter.lessons.isEmpty {
+            chapter.lessons = ChapterLessons.byChapter[chapter.id] ?? []
+        }
+        return chapter
+    }
+
+    private static let core: [Chapter] = [
         Chapter(
             id: 1,
             title: "Din & Dunya",

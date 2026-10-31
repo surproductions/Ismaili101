@@ -12,7 +12,17 @@ struct Chapter: Identifiable, Codable, Hashable {
     let symbol: String       // SF Symbol name
     let overview: [String]   // short paragraphs
     let keyTerms: [KeyTerm]
-    let quiz: [QuizQuestion] // two-question knowledge check
+    let quiz: [QuizQuestion] // knowledge check
+    var lessons: [Lesson] = [] // "Go deeper" lessons shown after the overview
+}
+
+/// A longer reading inside a chapter.
+struct Lesson: Identifiable, Codable, Hashable {
+    var id: String { heading }
+    let heading: String
+    let symbol: String
+    let body: [String]       // paragraphs
+    var reflection: String? = nil  // optional question to think about
 }
 
 struct KeyTerm: Identifiable, Codable, Hashable {

@@ -24,6 +24,16 @@ struct ChapterDetailView: View {
                         }
                         .card()
                     }
+                    if !chapter.lessons.isEmpty {
+                        section("Go deeper", symbol: "books.vertical.fill") {
+                            Text("\(chapter.lessons.count) lessons · tap to open each one.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            ForEach(Array(chapter.lessons.enumerated()), id: \.element.id) { index, lesson in
+                                LessonCard(lesson: lesson, number: index + 1)
+                            }
+                        }
+                    }
                     section("Key terms", symbol: "hand.tap.fill") {
                         Text("Tap a card to reveal its meaning.")
                             .font(.footnote)

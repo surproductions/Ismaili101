@@ -35,13 +35,34 @@ enum QAData {
                 "Being neurodivergent does not lessen anyone's worth or place in the community. Jamati institutions increasingly work on accessibility and inclusion in jamatkhanas and programmes.",
                 "For support, families can contact their local Ismaili Council or religious education board."
                ]),
-        QAItem(question: "What is the Ismaili view on LGBTQ+ people?",
-               category: "Ethics",
-               tags: ["gay", "lgbtq+", "lgbt", "sexuality", "queer", "trans"],
+        QAItem(question: "Who was Pir Nasir Khusraw?",
+               category: "Philosophy",
+               tags: ["nasir khusraw", "nasir khusrau", "pir", "badakhshan", "poet", "philosopher"],
                answer: [
-                "This app doesn't speak for the Imamat on this question, and Ismailis hold a range of personal views.",
-                "Principles that run through the tradition — the dignity of every person, compassion, and a jamat that welcomes and cares for its members — are a starting point many people draw on.",
-                "For guidance, speak with a trusted religious education teacher or your local Ismaili institutions."
+                "Nasir Khusraw (born 1004) was a Persian poet, philosopher and traveller. After a seven-year journey that included about three years in Fatimid Cairo, he became the chief Ismaili teacher (hujjat) of Khurasan.",
+                "Exiled for his beliefs, he spent his last years in Badakhshan, where Ismailis honour him as Pir. His works explore God's oneness, the intellect, and the soul's journey back to its source.",
+                "See chapters 11–13 in Learn for more."
+               ]),
+        QAItem(question: "Is the soul perfect?",
+               category: "Philosophy",
+               tags: ["soul", "nafs", "perfect", "perfection", "origin", "return"],
+               answer: [
+                "In Nasir Khusraw's thought, the soul comes from a perfect, spiritual source and carries the potential for perfection — like a seed that already holds the tree.",
+                "In this world it is still becoming. Through knowledge, guidance and good action, it grows from potential toward actual perfection and draws closer to its origin. The longing we feel for something beyond this world can be read as the soul remembering where it came from."
+               ]),
+        QAItem(question: "How does the Imam guide the soul?",
+               category: "Imamat",
+               tags: ["imam", "intellect", "soul", "ta'yid", "tayid", "noor", "guidance", "light"],
+               answer: [
+                "Classical Ismaili thinkers taught that the Imam receives ta'yid — divine support — so that his intellect and soul are perfected. He is the living guide and the bridge between the spiritual and physical worlds.",
+                "Through his teaching (ta'lim), the Imam helps each seeker turn the soul's potential into reality. The light of guidance (Noor) continues from Imam to Imam, like one flame passed between lamps."
+               ]),
+        QAItem(question: "How can we know a God beyond description?",
+               category: "Philosophy",
+               tags: ["god", "allah", "tawhid", "oneness", "relationship", "love"],
+               answer: [
+                "Ismaili thought holds that God is beyond every human category, so we cannot picture God. Instead we relate to God through God's Word, through the intellect it brings forth, through the guidance of the Imam, and through remembrance and love.",
+                "Prayer, learning and service are all ways the soul turns toward its source."
                ]),
         QAItem(question: "What is the Du'a and when is it recited?",
                category: "Practice",

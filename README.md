@@ -24,10 +24,10 @@ open Ismaili101.xcodeproj
 Ismaili101/
 ├── App/          Ismaili101App.swift (entry + TabView), Theme.swift (colours, haptics, card style)
 ├── Models/       Models.swift — Codable structs for every content type
-├── Data/         Chapters, Imams, Impact, Jeopardy, Q&A datasets (edit content here)
+├── Data/         Chapters (1–10), PhilosophyChapters (11–14), ChapterLessons, Imams, Impact, Jeopardy, Q&A
 ├── ViewModels/   ProgressStore (UserDefaults persistence) + one view model per tab
 └── Views/
-    ├── Learn/    Chapter list with progress ring, chapter detail, flip-card key terms, 2-question quiz
+    ├── Learn/    14 chapters with progress ring, "Go deeper" lessons, flip-card key terms, quizzes
     ├── Imams/    Era filter chips, timeline with "One cool fact" callouts
     ├── Impact/   Animated metric counters, agency cards with detail sheets
     ├── Jeopardy/ 5×5 board, streak multiplier (x1.5 at 2, x2 at 4), haptics, explanations
@@ -46,7 +46,7 @@ Some details in the original brief were outdated or inaccurate and were correcte
 - **Aga Khan III:** he presided over the League of Nations *Assembly* in 1937.
 - **Impact metrics:** the brief's "2M+ students / 10M+ patients / 100+ sites" weren't sourced. The app uses published figures instead (30+ countries, ~96,000 employees, 1,000+ programmes from the AKDN site; 2.2M annual patients from AKU). Each tile shows its source; update `ImpactData.swift` as figures change.
 
-The theological and ethical answers (especially Explore → LGBTQ+, neurodivergence, evolution) are written in general, introductory terms and **do not speak for the Imamat**. Have all content reviewed by community educators (e.g. your local ITREB) before release.
+The theological and ethical answers (especially the philosophy chapters, neurodivergence and evolution) are written in general, introductory terms and **do not speak for the Imamat**. Have all content reviewed by community educators (e.g. your local ITREB) before release.
 
 ## Ideas for next steps
 - Move datasets to JSON in the bundle, or load from a CMS.
