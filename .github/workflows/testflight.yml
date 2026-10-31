@@ -203,7 +203,7 @@ jobs:
           if [ "$SIGNING" = manual ]; then
             SIGN=(CODE_SIGN_STYLE=Manual "CODE_SIGN_IDENTITY=Apple Distribution" "PROVISIONING_PROFILE_SPECIFIER=$PROFILE_NAME")
           else
-            SIGN=(CODE_SIGN_STYLE=Automatic "CODE_SIGN_IDENTITY=Apple Distribution")
+            SIGN=(CODE_SIGN_STYLE=Automatic)
           fi
           xcodebuild \
             -project Ismaili101.xcodeproj -scheme Ismaili101 -configuration Release \
