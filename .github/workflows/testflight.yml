@@ -1,0 +1,246 @@
+name: TestFlight
+
+# Builds, signs and uploads the app to App Store Connect / TestFlight.
+# Run it from the Actions tab: TestFlight → Run workflow.
+# It finds your App Store Connect API key secrets by name, looks up your app's
+# bundle ID and team ID, and never prints secret values.
+
+on:
+  workflow_dispatch:
+    inputs:
+      bundle_id:
+        description: "Bundle ID (leave blank to detect from App Store Connect)"
+        required: false
+      team_id:
+        description: "Apple Team ID (leave blank to detect)"
+        required: false
+
+jobs:
+  lookup:
+    name: Find signing details
+    runs-on: ubuntu-latest
+    outputs:
+      key_id_name: ${{ steps.find.outputs.key_id_name }}
+      issuer_name: ${{ steps.find.outputs.issuer_name }}
+      private_key_name: ${{ steps.find.outputs.private_key_name }}
+      p12_name: ${{ steps.find.outputs.p12_name }}
+      p12_password_name: ${{ steps.find.outputs.p12_password_name }}
+      profile_name: ${{ steps.find.outputs.profile_name }}
+      bundle_id: ${{ steps.find.outputs.bundle_id }}
+      team_id: ${{ steps.find.outputs.team_id }}
+    steps:
+      - id: find
+        env:
+          SECRETS_JSON: ${{ toJSON(secrets) }}
+          INPUT_BUNDLE: ${{ github.event.inputs.bundle_id }}
+          INPUT_TEAM: ${{ github.event.inputs.team_id }}
+        run: |
+          pip install -q pyjwt cryptography requests
+          python3 - <<'EOF'
+          import base64, json, os, re, time
+          import jwt, requests
+
+          secrets = {k: v for k, v in json.loads(os.environ["SECRETS_JSON"]).items() if k.lower() != "github_token"}
+          print(f"::notice title=Secret names found::{', '.join(sorted(secrets)) or 'none'}")
+
+          def find(patterns, exclude=()):
+              for name in sorted(secrets):
+                  upper = name.upper()
+                  if any(re.search(p, upper) for p in patterns) and not any(re.search(e, upper) for e in exclude):
+                      return name
+              return ""
+
+          names = {
+              "key_id_name": find([r"KEY_?ID"]),
+              "issuer_name": find([r"ISSUER"]),
+              "private_key_name": find([r"PRIVATE", r"P8", r"AUTH_?KEY", r"API_?KEY$", r"API_?KEY_?(CONTENT|BASE64|B64)"],
+                                       exclude=[r"ID$", r"ISSUER", r"P12", r"CERT"]),
+              "p12_name": find([r"P12", r"CERTIFICATE"], exclude=[r"PASS", r"PWD"]),
+              "p12_password_name": find([r"P12.*PASS", r"CERT.*PASS", r"PASS.*P12", r"PASSWORD"], exclude=[r"KEYCHAIN"]),
+              "profile_name": find([r"PROFILE", r"PROVISION", r"MOBILEPROVISION"]),
+          }
+          print("::notice title=Using secrets::" + ", ".join(f"{k.replace('_name','')}={v or '-'}" for k, v in names.items()))
+
+          out = open(os.environ["GITHUB_OUTPUT"], "a")
+          for k, v in names.items():
+              out.write(f"{k}={v}\n")
+
+          key_id = secrets.get(names["key_id_name"], "").strip()
+          issuer = secrets.get(names["issuer_name"], "").strip()
+          pem = secrets.get(names["private_key_name"], "").strip()
+          if not (key_id and issuer and pem):
+              print("::error::Could not find the App Store Connect API key secrets (key ID, issuer ID and .p8 private key).")
+              raise SystemExit(1)
+          if "BEGIN PRIVATE KEY" not in pem:
+              pem = base64.b64decode(pem).decode()
+
+          token = jwt.encode({"iss": issuer, "iat": int(time.time()), "exp": int(time.time()) + 900, "aud": "appstoreconnect-v1"},
+                             pem, algorithm="ES256", headers={"kid": key_id, "typ": "JWT"})
+          headers = {"Authorization": f"Bearer {token}"}
+          api = "https://api.appstoreconnect.apple.com/v1"
+
+          r = requests.get(f"{api}/apps?limit=200", headers=headers)
+          if r.status_code != 200:
+              print(f"::error::App Store Connect rejected the API key ({r.status_code}): {r.text[:300]}")
+              raise SystemExit(1)
+          apps = [(a["attributes"]["name"], a["attributes"]["bundleId"]) for a in r.json()["data"]]
+          for name, bid in apps:
+              print(f"::notice title=App in App Store Connect::{name} — {bid}")
+
+          bundle = os.environ.get("INPUT_BUNDLE", "").strip()
+          bundle_secret = find([r"BUNDLE"])
+          if not bundle and bundle_secret:
+              bundle = secrets[bundle_secret].strip()
+          if not bundle:
+              matches = [b for n, b in apps if "ismaili" in n.lower() or "ismaili" in b.lower()]
+              if len(matches) == 1:
+                  bundle = matches[0]
+              elif len(apps) == 1:
+                  bundle = apps[0][1]
+          if not bundle:
+              print("::error::Could not tell which app to upload to. Create the app in App Store Connect (My Apps → +), "
+                    "or re-run this workflow and type the bundle ID.")
+              raise SystemExit(1)
+          if bundle not in [b for _, b in apps]:
+              print(f"::error::No app record for {bundle} in App Store Connect. Create it under My Apps → + → New App first.")
+              raise SystemExit(1)
+
+          team = os.environ.get("INPUT_TEAM", "").strip()
+          team_secret = find([r"TEAM"])
+          if not team and team_secret:
+              team = secrets[team_secret].strip()
+          if not team:
+              ids = requests.get(f"{api}/bundleIds?filter[identifier]={bundle}", headers=headers).json().get("data", [])
+              team = next((b["attributes"].get("seedId") for b in ids if b["attributes"].get("identifier") == bundle), "")
+          if not team:
+              print("::error::Could not find your Team ID. Re-run this workflow and type it (Apple Developer → Membership).")
+              raise SystemExit(1)
+
+          print(f"::notice title=Uploading to::{bundle} (team {team})")
+          out.write(f"bundle_id={bundle}\nteam_id={team}\n")
+          EOF
+
+  upload:
+    name: Build and upload
+    needs: lookup
+    runs-on: macos-15
+    env:
+      BUNDLE_ID: ${{ needs.lookup.outputs.bundle_id }}
+      TEAM_ID: ${{ needs.lookup.outputs.team_id }}
+      KEY_ID: ${{ secrets[needs.lookup.outputs.key_id_name] }}
+      ISSUER_ID: ${{ secrets[needs.lookup.outputs.issuer_name] }}
+      PRIVATE_KEY: ${{ secrets[needs.lookup.outputs.private_key_name] }}
+      P12: ${{ secrets[needs.lookup.outputs.p12_name] }}
+      P12_PASSWORD: ${{ secrets[needs.lookup.outputs.p12_password_name] }}
+      PROFILE: ${{ secrets[needs.lookup.outputs.profile_name] }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen and generate project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Prepare API key and signing
+        run: |
+          KEY_ID=$(printf '%s' "$KEY_ID" | tr -d '[:space:]')
+          echo "KEY_ID=$KEY_ID" >> "$GITHUB_ENV"
+          echo "ISSUER_ID=$(printf '%s' "$ISSUER_ID" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/keys"
+          KEYFILE="$RUNNER_TEMP/keys/AuthKey_${KEY_ID}.p8"
+          if printf '%s' "$PRIVATE_KEY" | grep -q "BEGIN PRIVATE KEY"; then
+            printf '%s\n' "$PRIVATE_KEY" > "$KEYFILE"
+          else
+            printf '%s' "$PRIVATE_KEY" | base64 --decode > "$KEYFILE"
+          fi
+          echo "KEYFILE=$KEYFILE" >> "$GITHUB_ENV"
+
+          if [ -n "$P12" ] && [ -n "$PROFILE" ]; then
+            echo "::notice::Using the distribution certificate and provisioning profile from your secrets."
+            KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+            KPW=$(uuidgen)
+            printf '%s' "$P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+            printf '%s' "$PROFILE" | base64 --decode > "$RUNNER_TEMP/profile.mobileprovision"
+            security create-keychain -p "$KPW" "$KEYCHAIN"
+            security set-keychain-settings -lut 21600 "$KEYCHAIN"
+            security unlock-keychain -p "$KPW" "$KEYCHAIN"
+            security import "$RUNNER_TEMP/cert.p12" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN"
+            security set-key-partition-list -S apple-tool:,apple: -k "$KPW" "$KEYCHAIN" >/dev/null
+            security list-keychain -d user -s "$KEYCHAIN"
+            security cms -D -i "$RUNNER_TEMP/profile.mobileprovision" > "$RUNNER_TEMP/profile.plist"
+            UUID=$(plutil -extract UUID raw "$RUNNER_TEMP/profile.plist")
+            PNAME=$(plutil -extract Name raw "$RUNNER_TEMP/profile.plist")
+            for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+              mkdir -p "$dir"; cp "$RUNNER_TEMP/profile.mobileprovision" "$dir/$UUID.mobileprovision"
+            done
+            echo "SIGNING=manual" >> "$GITHUB_ENV"
+            echo "PROFILE_NAME=$PNAME" >> "$GITHUB_ENV"
+          else
+            echo "::notice::No certificate/profile secrets found — using automatic signing with your API key."
+            echo "SIGNING=automatic" >> "$GITHUB_ENV"
+          fi
+
+      - name: Archive
+        run: |
+          BUILD_NUMBER=$(date -u +%Y%m%d%H%M)
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          if [ "$SIGNING" = manual ]; then
+            SIGN=(CODE_SIGN_STYLE=Manual "CODE_SIGN_IDENTITY=Apple Distribution" "PROVISIONING_PROFILE_SPECIFIER=$PROFILE_NAME")
+          else
+            SIGN=(CODE_SIGN_STYLE=Automatic "CODE_SIGN_IDENTITY=Apple Distribution")
+          fi
+          xcodebuild \
+            -project Ismaili101.xcodeproj -scheme Ismaili101 -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Ismaili101.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEYFILE" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER_ID" \
+            PRODUCT_BUNDLE_IDENTIFIER="$BUNDLE_ID" DEVELOPMENT_TEAM="$TEAM_ID" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" "${SIGN[@]}" \
+            archive 2>&1 | tee archive.log | grep -E "error:|warning: .*sign|ARCHIVE" || true
+          test -d "$RUNNER_TEMP/Ismaili101.xcarchive"
+
+      - name: Export and upload to App Store Connect
+        run: |
+          if [ "$SIGNING" = manual ]; then
+            cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key><dict><key>$BUNDLE_ID</key><string>$PROFILE_NAME</string></dict>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          else
+            cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          fi
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Ismaili101.xcarchive" \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEYFILE" -authenticationKeyID "$KEY_ID" -authenticationKeyIssuerID "$ISSUER_ID" \
+            2>&1 | tee export.log | grep -E "error:|Upload succeeded|EXPORT" || true
+          grep -q "EXPORT SUCCEEDED\|Upload succeeded" export.log
+          echo "::notice title=Uploaded::Version 1.0 build $BUILD_NUMBER was sent to App Store Connect. It appears in TestFlight after Apple finishes processing (usually 10–30 minutes)."
+
+      - name: Report errors
+        if: failure()
+        run: |
+          cat archive.log export.log 2>/dev/null | grep -E "error:|Error Domain|No profiles|No signing certificate|requires a provisioning profile" \
+            | sort -u | head -30 | while read -r line; do echo "::error::$line"; done
