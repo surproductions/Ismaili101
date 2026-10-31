@@ -72,7 +72,18 @@ jobs:
               print("::error::Could not find the App Store Connect API key secrets (key ID, issuer ID and .p8 private key).")
               raise SystemExit(1)
           if "BEGIN PRIVATE KEY" not in pem:
-              pem = base64.b64decode(pem).decode()
+              # Accept a base64-encoded .p8 file, or just the key body without header lines.
+              body = "".join(pem.split())
+              try:
+                  decoded = base64.b64decode(body).decode()
+              except Exception:
+                  decoded = ""
+              if "BEGIN PRIVATE KEY" in decoded:
+                  pem = decoded
+              else:
+                  pem = ("-----BEGIN PRIVATE KEY-----\n"
+                         + "\n".join(body[i:i + 64] for i in range(0, len(body), 64))
+                         + "\n-----END PRIVATE KEY-----\n")
 
           token = jwt.encode({"iss": issuer, "iat": int(time.time()), "exp": int(time.time()) + 900, "aud": "appstoreconnect-v1"},
                              pem, algorithm="ES256", headers={"kid": key_id, "typ": "JWT"})
@@ -148,10 +159,14 @@ jobs:
           echo "ISSUER_ID=$(printf '%s' "$ISSUER_ID" | tr -d '[:space:]')" >> "$GITHUB_ENV"
           mkdir -p "$RUNNER_TEMP/keys"
           KEYFILE="$RUNNER_TEMP/keys/AuthKey_${KEY_ID}.p8"
+          BODY=$(printf '%s' "$PRIVATE_KEY" | tr -d '[:space:]')
           if printf '%s' "$PRIVATE_KEY" | grep -q "BEGIN PRIVATE KEY"; then
             printf '%s\n' "$PRIVATE_KEY" > "$KEYFILE"
+          elif printf '%s' "$BODY" | base64 --decode 2>/dev/null | grep -q "BEGIN PRIVATE KEY"; then
+            printf '%s' "$BODY" | base64 --decode > "$KEYFILE"
           else
-            printf '%s' "$PRIVATE_KEY" | base64 --decode > "$KEYFILE"
+            # Key body pasted without the header and footer lines.
+            { echo "-----BEGIN PRIVATE KEY-----"; printf '%s' "$BODY" | fold -w 64; echo; echo "-----END PRIVATE KEY-----"; } > "$KEYFILE"
           fi
           echo "KEYFILE=$KEYFILE" >> "$GITHUB_ENV"
 
