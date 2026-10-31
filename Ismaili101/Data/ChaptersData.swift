@@ -5,7 +5,7 @@ import Foundation
 
 enum ChaptersData {
     /// Core chapters 1–10 plus philosophy chapters 11–14, with "Go deeper" lessons attached.
-    static let all: [Chapter] = (core + PhilosophyChapters.all + [BigQuestions.chapter]).map { chapter in
+    static let all: [Chapter] = (core + PhilosophyChapters.all + [BigQuestions.chapter, ProphetChapter.chapter]).map { chapter in
         var chapter = chapter
         if chapter.lessons.isEmpty {
             chapter.lessons = ChapterLessons.byChapter[chapter.id] ?? []

@@ -122,6 +122,36 @@ enum QAData {
                 "Highlights include al-Khwarizmi's algebra (c. 820), Ibn al-Haytham's optics in Fatimid Cairo (c. 1011–1021), Ibn Sina's Canon of Medicine, Ibn al-Nafis's description of blood flow through the lungs (1242), and al-Tusi's astronomy, later echoed by Copernicus.",
                 "Several are linked to Ismaili history, such as the Fatimid astronomer Ibn Yunus and al-Tusi's years among the Nizaris."
                ]),
+        QAItem(question: "How did the first revelation happen?",
+               category: "The Prophet",
+               tags: ["revelation", "hira", "gabriel", "first revelation", "iqra", "muhammad", "prophet"],
+               answer: [
+                "In 610, while meditating in the cave of Hira, Muhammad — then about forty — was told by the angel Gabriel: 'Read!' The first verses of the Qur'an followed (96:1–5).",
+                "He was frightened and went home trembling, asking Khadija to cover him. She reassured him, and her Christian cousin Waraqa confirmed it was the same message that had come to Moses. After a pause in revelation, the verses 'Your Lord has not forsaken you' (93:3) came.",
+                "Some early reports say his distress during the pause was so deep he thought of ending his life; many scholars consider those reports weak. The reliable accounts show a very human prophet, comforted by those who loved him. See Chapter 16."
+               ]),
+        QAItem(question: "Who was the Prophet Muhammad?",
+               category: "The Prophet",
+               tags: ["muhammad", "prophet", "biography", "seerah", "khadija", "mecca"],
+               answer: [
+                "Born in Mecca around 570, orphaned young and raised by his uncle Abu Talib, Muhammad was a merchant known as al-Amin, 'the trustworthy'. He married Khadija at about 25.",
+                "At about forty he began receiving revelations. He preached one God and justice for the poor, faced persecution, migrated to Madina in 622, and returned to Mecca in 630 with a general amnesty. He died in 632. See Chapter 16."
+               ]),
+        QAItem(question: "Do Muslims believe in Jesus, Noah and their miracles?",
+               category: "Other religions",
+               tags: ["jesus", "isa", "noah", "nuh", "miracles", "ark", "moses", "prophets", "christianity"],
+               answer: [
+                "Yes. Muslims honour Noah, Abraham, Moses and Jesus as prophets. The Qur'an tells of Noah building the ark, and of Jesus' virgin birth and miracles — healing the blind and raising the dead by God's permission. (Walking on water appears in the Gospels, not the Qur'an.)",
+                "Islam's central miracle is the Qur'an itself. Ismaili thought also reads these stories for their inner meaning: a well-known saying compares the Prophet's family to Noah's ark — whoever boards it is saved — pointing to guidance as the true vessel of salvation.",
+                "See the Compare tab for more on how Islam relates to other faiths."
+               ]),
+        QAItem(question: "Why did Muslims divide into Sunni and Shia?",
+               category: "History",
+               tags: ["sunni", "shia", "division", "split", "succession", "caliph", "saqifa"],
+               answer: [
+                "After the Prophet died in 632, Muslims disagreed about who should lead. Most accepted Abu Bakr, chosen at Saqifa, and the caliphs after him — they became Sunni Muslims. Others held that the Prophet had designated Ali at Ghadir Khumm — they became the Shia.",
+                "The Shia later divided over the line of Imams into Zaydis, Twelvers and Ismailis. See Chapter 16 and Explore → Compare → Within Islam."
+               ]),
         QAItem(question: "What is the Du'a and when is it recited?",
                category: "Practice",
                tags: ["prayer", "dua", "du'a", "namaz", "salah"],

@@ -1,7 +1,10 @@
 import SwiftUI
 
 struct ExploreView: View {
+    enum Pane: String, CaseIterable { case questions = "Q&A", compare = "Compare" }
+
     @StateObject private var vm = ExploreViewModel()
+    @State private var pane: Pane = .questions
 
     var body: some View {
         NavigationStack {
@@ -9,14 +12,24 @@ struct ExploreView: View {
                 AmbientBackground()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
-                        suggestionChips
+                        Picker("Section", selection: $pane) {
+                            ForEach(Pane.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                        }
+                        .pickerStyle(.segmented)
+                        .onChange(of: pane) { _ in Haptics.tap() }
 
-                        if vm.results.isEmpty {
-                            emptyState
+                        if pane == .compare {
+                            CompareView(query: vm.query)
                         } else {
-                            ForEach(vm.results) { item in
-                                QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
-                                    vm.toggle(item)
+                            suggestionChips
+
+                            if vm.results.isEmpty {
+                                emptyState
+                            } else {
+                                ForEach(vm.results) { item in
+                                    QACard(item: item, isExpanded: vm.expanded.contains(item.id)) {
+                                        vm.toggle(item)
+                                    }
                                 }
                             }
                         }
@@ -33,7 +46,7 @@ struct ExploreView: View {
             }
             .navigationTitle("Explore")
             .searchable(text: $vm.query, placement: .navigationBarDrawer(displayMode: .always),
-                        prompt: "Search questions or topics")
+                        prompt: pane == .questions ? "Search questions or topics" : "Search religions")
         }
     }
 

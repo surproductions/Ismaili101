@@ -269,3 +269,30 @@ struct DebatedClaim: Identifiable, Hashable {
     let supporters: String
     let critics: String
 }
+
+// MARK: - Compare
+
+struct ReligionProfile: Identifiable, Hashable {
+    var id: String { name }
+    let name: String
+    let symbol: String
+    let origin: String
+    let followers: String
+    let god: String
+    let keyFigures: String
+    let scriptures: String
+    let afterlife: String
+    let practices: String
+    let similarities: [String]
+    let differences: [String]
+    var ismailiNote: String? = nil
+}
+
+struct MuslimGroup: Identifiable, Hashable {
+    var id: String { name }
+    let name: String
+    let share: String
+    let leadership: String
+    let whereFound: String
+    let features: [String]
+}

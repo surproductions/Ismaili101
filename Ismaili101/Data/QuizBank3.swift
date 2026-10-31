@@ -133,3 +133,32 @@ extension QuizBank {
         Q("Is there a single Ismaili ruling on keeping pets?", ["No — families choose; compassion is required", "Yes, pets are forbidden", "Yes, everyone must have one", "Only cats allowed"], 0, "The clear teaching is compassion for animals.")
     ]
 }
+
+extension QuizBank {
+    // MARK: Chapter 16 — The Prophet & the Birth of Islam
+    static let ch16: [QuizQuestion] = [
+        Q("Around what year was the Prophet born?", ["570 CE", "632 CE", "500 BCE", "909 CE"], 0, "Around 570 CE."),
+        Q("Who raised the Prophet after his grandfather died?", ["His uncle Abu Talib", "Abu Bakr", "Waraqa", "Umar"], 0, "Abu Talib — the father of Ali."),
+        Q("What nickname did the Meccans give him?", ["Al-Amin, 'the trustworthy'", "The Lion", "The Poet", "The King"], 0, "Al-Amin."),
+        Q("Who was the Prophet's first wife?", ["Khadija", "Fatima", "Amina", "Sumayya"], 0, "Khadija, a respected businesswoman."),
+        Q("How did he solve the dispute over the Black Stone?", ["All clans lifted it together on a cloak", "He placed it alone", "He drew lots", "He left it on the ground"], 0, "Every clan shared the honour."),
+        Q("In which cave did the first revelation come?", ["Hira", "Thawr", "Uhud", "Nur"], 0, "The cave of Hira on Mount Nur."),
+        Q("In what year did the first revelation come?", ["610", "622", "570", "632"], 0, "Around 610, in Ramadan."),
+        Q("What did the Prophet say to Khadija when he came home shaken?", ["'Cover me, cover me!'", "'I am king'", "'Let us leave'", "'Bring food'"], 0, "He was frightened and trembling."),
+        Q("Who was Waraqa ibn Nawfal?", ["Khadija's Christian scholar cousin", "A Meccan general", "The Prophet's brother", "A Persian king"], 0, "He confirmed the revelation was like that given to Moses."),
+        Q("Who was the first person to accept Islam?", ["Khadija", "Abu Bakr", "Umar", "Uthman"], 0, "Khadija."),
+        Q("What is the 'fatra'?", ["A pause in revelation", "A battle", "A prayer", "A tax"], 0, "A pause before revelation resumed."),
+        Q("Which sura reassured the Prophet: 'Your Lord has not forsaken you'?", ["Al-Duha (93)", "Al-Fatiha (1)", "Al-Baqara (2)", "Yasin (36)"], 0, "Surat al-Duha."),
+        Q("Who was the first person killed for her faith in Islam?", ["Sumayya", "Khadija", "Fatima", "Aisha"], 0, "Sumayya."),
+        Q("Bilal was freed by…", ["Abu Bakr", "Abu Lahab", "Abu Talib", "Waraqa"], 0, "Abu Bakr bought his freedom."),
+        Q("Early Muslims took refuge with the king of…", ["Abyssinia (Ethiopia)", "Persia", "Rome", "India"], 0, "A Christian king who protected them."),
+        Q("What was the 'Year of Sorrow'?", ["619, when Khadija and Abu Talib died", "632, the Prophet's death", "680, Karbala", "622, the Hijra"], 0, "619."),
+        Q("Who slept in the Prophet's bed on the night of the Hijra?", ["Ali", "Abu Bakr", "Zayd", "Bilal"], 0, "Ali, to protect him."),
+        Q("Yathrib became known as…", ["Madina", "Mecca", "Ta'if", "Kufa"], 0, "Madina, the city of the Prophet."),
+        Q("The Constitution of Madina set out rights for…", ["Muslims, Jews and others living together", "Only Muslims", "Only Meccans", "Only merchants"], 0, "A shared civic agreement."),
+        Q("When the Prophet returned to Mecca in 630, he…", ["Declared a general amnesty", "Took revenge", "Burned the city", "Left immediately"], 0, "He forgave his former persecutors."),
+        Q("Where did the Prophet raise Ali's hand and declare him mawla?", ["Ghadir Khumm", "Badr", "Uhud", "Saqifa"], 0, "On the way back from the Farewell Pilgrimage, 632."),
+        Q("Who was chosen as first caliph at Saqifa?", ["Abu Bakr", "Ali", "Umar", "Uthman"], 0, "Abu Bakr."),
+        Q("After Imam Ja'far al-Sadiq, the Shia divided into the Ismailis and the…", ["Twelvers", "Sunnis", "Sufis", "Kharijites"], 0, "The Twelvers followed a different son.")
+    ]
+}

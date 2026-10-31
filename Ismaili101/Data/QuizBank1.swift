@@ -24,6 +24,7 @@ enum QuizBank {
         case 13: return ch13
         case 14: return ch14
         case 15: return ch15
+        case 16: return ch16
         default: return []
         }
     }
