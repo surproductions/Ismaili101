@@ -138,7 +138,7 @@ jobs:
   upload:
     name: Build and upload
     needs: lookup
-    runs-on: macos-15
+    runs-on: macos-26
     env:
       BUNDLE_ID: ${{ needs.lookup.outputs.bundle_id }}
       TEAM_ID: ${{ github.event.inputs.team_id || secrets.APPLE_TEAM_ID || needs.lookup.outputs.team_id }}
@@ -147,6 +147,14 @@ jobs:
       PRIVATE_KEY: ${{ secrets.ASC_KEY_P8 }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then echo "::error::Xcode 26 is not installed on this runner"; ls -d /Applications/Xcode*.app; exit 1; fi
+          sudo xcode-select -s "$XCODE/Contents/Developer"
+          xcodebuild -version
+          echo "::notice title=Xcode::$(xcodebuild -version | head -1) ($(xcrun --sdk iphoneos --show-sdk-version))"
 
       - name: Install XcodeGen and generate project
         run: |
