@@ -16,7 +16,12 @@ struct Ismaili101App: App {
 enum AppTab: Int { case learn, history, impact, play, explore }
 
 struct RootTabView: View {
+    @EnvironmentObject private var progress: ProgressStore
     @State private var tab: AppTab = LaunchScreen.current?.tab ?? .learn
+    @State private var showTutorial: Bool = {
+        if let screen = LaunchScreen.current { return screen == .tutorial || screen == .tutorial2 }
+        return !TutorialView.hasSeen
+    }()
 
     var body: some View {
         TabView(selection: $tab) {
@@ -37,13 +42,14 @@ struct RootTabView: View {
                 .tag(AppTab.explore)
         }
         .onChange(of: tab) { _ in Haptics.tap() }
+        .fullScreenCover(isPresented: $showTutorial) { TutorialView().environmentObject(progress) }
     }
 }
 
 /// Opens a specific screen when launched with `-screen <name>`.
 /// Used by the automated simulator screenshots; has no effect in normal use.
 enum LaunchScreen: String {
-    case learn, chapter, daily, path, faith, festivals, about
+    case learn, chapter, daily, path, faith, festivals, about, tutorial, tutorial2
     case history, imam, journey, figures
     case impact, agency, contributions
     case play, jeopardy, match, truefalse, timeline
@@ -59,7 +65,7 @@ enum LaunchScreen: String {
 
     var tab: AppTab {
         switch self {
-        case .learn, .chapter, .daily, .path, .faith, .festivals, .about: return .learn
+        case .learn, .chapter, .daily, .path, .faith, .festivals, .about, .tutorial, .tutorial2: return .learn
         case .history, .imam, .journey, .figures: return .history
         case .impact, .agency, .contributions: return .impact
         case .play, .jeopardy, .match, .truefalse, .timeline: return .play

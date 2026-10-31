@@ -4,6 +4,7 @@ import SwiftUI
 struct AboutView: View {
     @EnvironmentObject private var progress: ProgressStore
     @State private var reminderTime = Date()
+    @State private var showTour = false
 
     var body: some View {
         ZStack {
@@ -22,6 +23,15 @@ struct AboutView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .card()
+
+                    Button {
+                        Haptics.tap()
+                        showTour = true
+                    } label: {
+                        LinkCard(title: "Take the tour", subtitle: "A one-minute guide to everything in the app",
+                                 symbol: "sparkles", gold: true)
+                    }
+                    .buttonStyle(SpringButtonStyle())
 
                     VStack(alignment: .leading, spacing: 8) {
                         Label("About this app", systemImage: "info.circle.fill")
@@ -87,5 +97,6 @@ struct AboutView: View {
         .navigationTitle("About & Sources")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { reminderTime = progress.reminderDate }
+        .fullScreenCover(isPresented: $showTour) { TutorialView().environmentObject(progress) }
     }
 }
